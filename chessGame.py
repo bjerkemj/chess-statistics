@@ -1,4 +1,5 @@
 import os
+import re
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 class ChessGame:
@@ -9,9 +10,48 @@ class ChessGame:
     def __init__(self, pgn: str):
         self.metaData = {}
         self.moves = []
+        self.stockfishWhite = False
+        self.draw = False
+        self.whiteWon = False
+        self.totalMoves = 0
         self.loadPng(pgn)
 
+    def getStockfishWhite(self) -> bool:
+        return self.stockfishWhite
+
+    def getDraw(self) -> bool:
+        return self.draw
     
+    def getWhiteWon(self) -> bool:
+        return self.whiteWon
+    
+    def getTotalMoves(self) -> int:
+        return self.moves
+
+    def getStockfishWon(self) -> bool:
+        return self.getStockfishWhite() == self.getWhiteWon() and not self.getDraw()
+
+    def getStockfishLost(self) -> bool:
+        return self.getStockfishWhite() !=  self.getWhiteWon() and not self.getDraw()
+
+    def getStockfishWhiteWin(self) -> bool:
+        return self.getStockfishWhite() and self.getStockfishWon()
+    
+    def getStockfishWhiteLoss(self) -> bool:
+        return self.getStockfishWhite() and self.getStockfishLost()
+    
+    def getStockfishWhiteDraw(self) -> bool:
+        return self.getStockfishWhite() and self.getDraw()
+
+    def getStockfishBlackWin(self) -> bool:
+        return not self.getStockfishWhite() and self.getStockfishWon()
+    
+    def getStockfishBlackLoss(self) -> bool:
+        return not self.getStockfishWhite() and self.getStockfishLost()
+    
+    def getStockfishBlackDraw(self) -> bool:
+        return not self.getStockfishWhite() and self.getDraw()
+
     def loadPng(self, pgn: str) -> None:
         split = pgn.split("\n")
         dataSplitIndex = split.index("")
@@ -45,6 +85,8 @@ class ChessGame:
 
             gameDataText = gameDataText[commentEndIndex+(1 if len(self.moves)%2==1 else 2):]
 
+        self.updateGameData()
+
     def savePng(self, saveName: str) -> None:
         with open(os.path.join(ROOT, saveName + ".pgn"), "w") as f:
             for key, value in self.metaData.items():
@@ -62,7 +104,6 @@ class ChessGame:
 
             index = 0
             while index+81<len(gameDataText):
-                print(index)
                 spaceIndex = gameDataText.rfind(" ", index, index+81)
                 gameDataList = list(gameDataText)
                 gameDataList[spaceIndex] = "\n"
@@ -72,18 +113,24 @@ class ChessGame:
             f.writelines(gameDataText)
             f.write(self.metaData["Result"] + "\n")
 
+    def updateGameData(self) -> None:
+        self.stockfishWhite = True if re.search(r"\bStockfish\b", self.metaData["White"]) else False
+        self.totalMoves = self.metaData["PlyCount"]
+        if self.metaData["Result"] == "1/2-1/2":
+            self.draw = True
+            return 
+        self.whiteWon = True if self.metaData["Result"] == "1-0" else False
+        
 
 def main():
     cg1 = None
-    print(len("{(Nc6) -1.05/30 18s} 35. d4 {(d4) +1.52/28 19s} Bd6 {(Bd6) -1.24/24 14s} 36. h4"))
-    print(len("+5.98/27 18s} Qf2+ {(Qf2) -7.85/32 32s} 48. Qd2 {(Qd2) +6.79/28 26s} Qg1 {(Qc5)"))
     with open(os.path.join(ROOT, "oneGame.pgn"), "r") as f:      
         str = ""
         for line in f:
             str += line
         cg1 = ChessGame(str)
         cg1.savePng("saveOneGame")
-
+        print(cg1.getDraw())
 
 if __name__ == '__main__':
     main()
