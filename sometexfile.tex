@@ -1,4 +1,20 @@
 \documentclass{article}
-\begin{document}
-Hello Palo Alto!
+\title{Stockfish chess statistics}
+\author{Johan Bjerkem}
+\usepackage{multirow}\usepackage{pgfplots}\begin{document}
+\maketitle
+\begin{tabular}{l|rrr}
+Color/Result & Wins & Draws & Losses\\
+\hline
+Any & 992 & 1600 & 8\\
+White & 698 & 601 & 2\\
+Black & 294 & 999 & 6\\
+\end{tabular}
+\\\begin{tikzpicture}
+\begin{axis}
+\addplot[color=red]{exp(x)};
+\end{axis}
+\end{tikzpicture}
+
+Bruh!
 \end{document}
