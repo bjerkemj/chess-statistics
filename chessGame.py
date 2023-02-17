@@ -69,9 +69,9 @@ class ChessGame:
                 gameDataText = "".join(gameDataList)
                 index = spaceIndex
             
-
             f.writelines(gameDataText)
-            f.write(self.metaData["Result"])
+            f.write(self.metaData["Result"] + "\n")
+
 
 def main():
     cg1 = None
