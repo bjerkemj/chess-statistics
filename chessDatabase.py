@@ -1,6 +1,6 @@
 from chessGame import ChessGame
-import subprocess
 import os
+import math
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -11,6 +11,9 @@ class ChessDatabase:
 
     def getGames(self) -> list:
         return self.games
+    
+    def getTotalMoves(self):
+        return [game.getTotalMoves() for game in self.getGames()]
     
     def getActiveGames(self, playCount: int) -> list:
         return [game for game in self.getGames() if game.getTotalMoves() > playCount]
@@ -50,6 +53,13 @@ class ChessDatabase:
             playCount+=1
         return activeGames
     
+    def getMean(self, games: list):
+        return round(sum(games)/len(games),2)
+    
+    def getSd(self, games: list):
+        mean = self.getMean(games)
+        return round(math.sqrt(sum([abs(game - mean) for game in games])/len(games)), 2)
+       
     def addGame(self, pgn: str) -> None:
         self.games.append(ChessGame(pgn))
 
@@ -63,13 +73,11 @@ class ChessDatabase:
 
     def createPdf(self):
         ongoing = self.getOngoingList()
-        dataPoint = ""
+        dataPointsAllGames= ""
 
         for i, game in enumerate(ongoing):
-            dataPoint += f'({i},{game})'
-        print(dataPoint)
+            dataPointsAllGames+= f'({i},{game})'
                 
-
         with open('sometexfile.tex', 'w') as file:
             file.write('\\documentclass{article}\n')
             file.write('\\title{Stockfish chess statistics}\n')
@@ -95,9 +103,10 @@ class ChessDatabase:
 
             file.write("Below is a graph showing the number of games that is still active after $x$ number of moves.\n\n")
 
-            file.write('\\begin{tikzpicture}\n')
+            file.write('\\begin{figure}')
+            file.write('\\begin {tikzpicture}\n')
             file.write('\\begin{axis}[\n')
-            file.write('\txmin = 0, xmax = 450,\n')
+            file.write('\txmin = 0, xmax = 425,\n')
             file.write('\tymin = 0, ymax = 2700,\n')
             file.write('\txtick distance = 50,\n')
             file.write('\tytick distance = 300,\n')
@@ -116,11 +125,45 @@ class ChessDatabase:
             file.write('\tred,\n')
             file.write(']\n')
             file.write('coordinates {\n')
-            file.write(dataPoint+"\n")
+            file.write(dataPointsAllGames + "\n")
             file.write('};\n')
 
             file.write('\\end{axis}\n')
             file.write('\\end{tikzpicture}\n')
+            file.write('\caption{Mean moves: ' + str(self.getMean(self.getTotalMoves())) + ', SD: ' + str(self.getSd(self.getTotalMoves())) + '}\n')
+            file.write('\end{figure}\n')
+
+            file.write("Below is a graph showing the number of games that is still active after $x$ number of moves.\n\n")
+
+            file.write('\\begin{figure}')
+            file.write('\\begin {tikzpicture}\n')
+            file.write('\\begin{axis}[\n')
+            file.write('\txmin = 0, xmax = 425,\n')
+            file.write('\tymin = 0, ymax = 2700,\n')
+            file.write('\txtick distance = 50,\n')
+            file.write('\tytick distance = 300,\n')
+            file.write('\tgrid = both,\n')
+            file.write('\tminor tick num = 1,\n')
+            file.write('\tmajor grid style = {lightgray},\n')
+            file.write('\tminor grid style = {lightgray!25},\n')
+            file.write('\twidth = \\textwidth,\n')
+            file.write('\theight = 0.5\\textwidth,\n')
+            file.write('\txlabel = {$moves$},\n')
+            file.write('\tylabel = {$games$},]\n')
+
+            file.write('\\addplot[\n')
+            file.write('\tsmooth,\n')
+            file.write('\tthick,\n')
+            file.write('\tred,\n')
+            file.write(']\n')
+            file.write('coordinates {\n')
+            file.write(dataPointsAllGames + "\n")
+            file.write('};\n')
+
+            file.write('\\end{axis}\n')
+            file.write('\\end{tikzpicture}\n')
+            file.write('\caption{Mean moves: ' + str(self.getMean(self.getTotalMoves())) + ', SD: ' + str(self.getSd(self.getTotalMoves())) + '}\n')
+            file.write('\end{figure}\n')
 
             file.write('\\end{document}\n')
 
@@ -133,9 +176,10 @@ class ChessDatabase:
 def main():
     db = ChessDatabase()
     db.addGames()
-    db.getGamesStockfishWon()
     print()
     db.createPdf()
+    print(db.getMean(db.getTotalMoves()))
+    print(db.getSd(db.getTotalMoves()))
 
 
 
