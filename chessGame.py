@@ -26,7 +26,7 @@ class ChessGame:
         return self.whiteWon
     
     def getTotalMoves(self) -> int:
-        return self.moves
+        return self.totalMoves
 
     def getStockfishWon(self) -> bool:
         return self.getStockfishWhite() == self.getWhiteWon() and not self.getDraw()
@@ -115,7 +115,7 @@ class ChessGame:
 
     def updateGameData(self) -> None:
         self.stockfishWhite = True if re.search(r"\bStockfish\b", self.metaData["White"]) else False
-        self.totalMoves = self.metaData["PlyCount"]
+        self.totalMoves = int(self.metaData["PlyCount"])
         if self.metaData["Result"] == "1/2-1/2":
             self.draw = True
             return 
@@ -131,6 +131,7 @@ def main():
         cg1 = ChessGame(str)
         cg1.savePng("saveOneGame")
         print(cg1.getDraw())
+        print(cg1.getTotalMoves())
 
 if __name__ == '__main__':
     main()
