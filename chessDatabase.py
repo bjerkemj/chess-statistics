@@ -7,15 +7,17 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 
 
 class ChessDatabase:
-    def __init__(self):
-        self.games = []
+    def __init__(self, games: List[ChessGame] = []):
+        self.games = games
+        if not self.games:
+            self.addGames()
 
     def getAllGames(self) -> List[ChessGame]:
         return self.games
-    
+
     def getTotalMovesOfGames(self, games: List[ChessGame]):
         return [game.getTotalMoves() for game in games]
-    
+
     def filterByMoves(self, games: List[ChessGame], playCount: int) -> List[ChessGame]:
         return [game for game in games if game.getTotalMoves() > playCount]
 
@@ -40,24 +42,24 @@ class ChessDatabase:
         while True:
             filteredGames = self.filterByMoves(games, playCount)
             activeGames.append(len(filteredGames))
-            playCount+=1
+            playCount += 1
             if len(filteredGames) == 0:
                 break
         return activeGames
-    
+
     def getDataPoints(self, games: List[ChessGame]) -> str:
         dataPoints = ""
         for i, game in enumerate(games):
-            dataPoints+= f'({i},{game})'
+            dataPoints += f'({i},{game})'
         return dataPoints
-    
+
     def getMean(self, games: list):
-        return round(sum(games)/len(games),2)
-    
+        return round(sum(games)/len(games), 2)
+
     def getSd(self, games: list):
         mean = self.getMean(games)
         return round(math.sqrt(sum([abs(game - mean) for game in games])/len(games)), 2)
-       
+
     def _addGame(self, pgn: str) -> None:
         self.games.append(ChessGame(pgn))
 
@@ -69,7 +71,27 @@ class ChessDatabase:
                 gameInfo = "\n\n".join(metaDataGameInfoSplit[i:i+2])
                 self._addGame(gameInfo)
 
-    def createPdf(self):
+    def getAllPlayedOpenings(self) -> List[str]:
+        return list(set([game.getOpening() for game in self.games]))
+
+    def getOpeningsPlayedOverNTimes(self, n: int) -> List[str]:
+        allOpenings = self.getAllPlayedOpenings()
+        openingsDict = {}
+        for opening in allOpenings:
+            numPlayed = len(self.getFilteredListOfGamesByOpening(opening))
+            if numPlayed >= n:
+                openingsDict[opening] = numPlayed
+        return openingsDict
+
+    def getFilteredListOfGamesByMoveSequence(self, moveSequence: dict) -> List[ChessGame]:
+        return [game for game in self.games if all([game.getMoveByNumber(moveNumber) == move for moveNumber, move in moveSequence.items()])]
+
+    def getFilteredListOfGamesByOpening(self, opening: str) -> List[ChessGame]:
+        return [game for game in self.games if game.getOpening() == opening]
+    # def getFilteredDataBaseByMoveSequence(self, moveSequence: dict) -> ChessDatabase:
+    #     pass
+
+    def getStatsDictionary(self) -> dict:
         gamesAll = self.getAllGames()
         gamesStockfishWhite = self.filterStockfishWhite(gamesAll)
         gamesStockfishBlack = self.filterStockfishBlack(gamesAll)
@@ -79,11 +101,48 @@ class ChessDatabase:
         gamesStockfishLost = self.filterStockfishLost(gamesAll)
 
         gamesWhiteStockfishWon = self.filterStockfishWhite(gamesStockfishWon)
-        gamesWhiteStockfishDrawn = self.filterStockfishWhite(gamesStockfishDrawn)
+        gamesWhiteStockfishDrawn = self.filterStockfishWhite(
+            gamesStockfishDrawn)
+        gamesWhiteStockfishLost = self.filterStockfishWhite(gamesStockfishLost)
+        numWhiteStockfishAll = len(gamesWhiteStockfishDrawn) + \
+            len(gamesWhiteStockfishLost) + len(gamesWhiteStockfishWon)
+
+        gamesBlackStockfishWon = self.filterStockfishBlack(gamesStockfishWon)
+        gamesBlackStockfishDrawn = self.filterStockfishBlack(
+            gamesStockfishDrawn)
+        gamesBlackStockfishLost = self.filterStockfishBlack(gamesStockfishLost)
+        numBlackStockfishAll = len(gamesBlackStockfishDrawn) + \
+            len(gamesBlackStockfishLost) + len(gamesBlackStockfishWon)
+
+        onGoing = self.getNumListOngoingGames(gamesAll)
+        onGoingWhite = self.getNumListOngoingGames(gamesStockfishWhite)
+        onGoingBlack = self.getNumListOngoingGames(gamesStockfishBlack)
+
+        dataPointsAllGames = self.getDataPoints(onGoing)
+        dataPointsStockFishWhiteGames = self.getDataPoints(onGoingWhite)
+        dataPointsStockFishBlackGames = self.getDataPoints(onGoingBlack)
+
+        statsDictionary = {'gamesAll': gamesAll, 'gamesStockfishWhite': gamesStockfishWhite, 'gamesStockfishBlack': gamesStockfishBlack, 'gamesStockfishWon': gamesStockfishWon, 'gamesStockfishDrawn': gamesStockfishDrawn, 'gamesStockfishLost': gamesStockfishLost, 'gamesWhiteStockfishWon': gamesWhiteStockfishWon, 'gamesWhiteStockfishDrawn': gamesWhiteStockfishDrawn, 'gamesWhiteStockfishLost': gamesWhiteStockfishLost, 'gamesBlackStockfishWon': gamesBlackStockfishWon, 'gamesBlackStockfishDrawn': gamesBlackStockfishDrawn, 'gamesBlackStockfishLost': gamesBlackStockfishLost, 'onGoing': onGoing, 'onGoingWhite': onGoingWhite, 'onGoingBlack': onGoingBlack,
+                           'dataPointsAllGames': dataPointsAllGames, 'dataPointsStockFishWhiteGames': dataPointsStockFishWhiteGames, 'dataPointsStockFishBlackGames': dataPointsStockFishBlackGames, 'numGamesAll': len(gamesAll), 'numGamesStockfishWon': len(gamesStockfishWon), 'numGamesStockfishDrawn': len(gamesStockfishDrawn), 'numGamesStockfishLost': len(gamesStockfishLost), 'numGamesWhiteStockfishWon': len(gamesWhiteStockfishWon), 'numGamesWhiteStockfishDrawn': len(gamesWhiteStockfishDrawn), 'numGamesWhiteStockfishLost': len(gamesWhiteStockfishLost), 'numGamesWhiteStockfishAll': numWhiteStockfishAll, 'numGamesBlackStockfishAll': numBlackStockfishAll, 'numGamesBlackStockfishWon': len(gamesBlackStockfishWon), 'numGamesBlackStockfishDrawn': len(gamesBlackStockfishDrawn), 'numGamesBlackStockfishLost': len(gamesBlackStockfishLost)}
+        return statsDictionary
+
+    def createPdf(self, fileName: str = 'sometexfile') -> None:
+        gamesAll = self.getAllGames()
+        gamesStockfishWhite = self.filterStockfishWhite(gamesAll)
+        gamesStockfishBlack = self.filterStockfishBlack(gamesAll)
+
+        gamesStockfishWon = self.filterStockfishWon(gamesAll)
+        gamesStockfishDrawn = self.filterDrawn(gamesAll)
+        gamesStockfishLost = self.filterStockfishLost(gamesAll)
+
+        gamesWhiteStockfishWon = self.filterStockfishWhite(gamesStockfishWon)
+        gamesWhiteStockfishDrawn = self.filterStockfishWhite(
+            gamesStockfishDrawn)
         gamesWhiteStockfishLost = self.filterStockfishWhite(gamesStockfishLost)
 
         gamesBlackStockfishWon = self.filterStockfishBlack(gamesStockfishWon)
-        gamesBlackStockfishDrawn = self.filterStockfishBlack(gamesStockfishDrawn)
+        gamesBlackStockfishDrawn = self.filterStockfishBlack(
+            gamesStockfishDrawn)
         gamesBlackStockfishLost = self.filterStockfishBlack(gamesStockfishLost)
 
         onGoing = self.getNumListOngoingGames(gamesAll)
@@ -94,9 +153,7 @@ class ChessDatabase:
         dataPointsStockFishWhiteGames = self.getDataPoints(onGoingWhite)
         dataPointsStockFishBlackGames = self.getDataPoints(onGoingBlack)
 
-        
-                
-        with open('sometexfile.tex', 'w') as file:
+        with open(fileName + '.tex', 'w') as file:
             file.write('\\documentclass{article}\n')
             file.write('\\title{Stockfish chess statistics}\n')
             file.write('\\author{Johan Bjerkem}\n')
@@ -106,20 +163,25 @@ class ChessDatabase:
             file.write('\\begin{document}\n')
             file.write('\maketitle\n')
 
-            file.write("In this document i will present tables, graphs and statistics about 2600 chess games played by the chess engine Stockfish. The game information is gathered from the document 'Stockfish\\textunderscore15\\textunderscore64-bit.commented.[2600].pgn'. Hopefully you find the data insightful.\\\\\\\\")
+            file.write(
+                "In this document i will present tables, graphs and statistics about 2600 chess games played by the chess engine Stockfish. The game information is gathered from the document 'Stockfish\\textunderscore15\\textunderscore64-bit.commented.[2600].pgn'. Hopefully you find the data insightful.\\\\\\\\")
             file.write("First we will have a look at the win, loss and draw statistics for Stockfish. The data is presented in a table, where you also can read what color Stockfish played as.\n")
 
             file.write('\\begin{center}\n')
             file.write('\\begin{tabular}{l|rrr}\n')
             file.write('Color/Result & Wins & Draws & Losses\\\\\n')
             file.write('\hline\n')
-            file.write(f'Any & {len(gamesStockfishWon)} & {len(gamesStockfishDrawn)} & {len(gamesStockfishLost)}\\\\\n')
-            file.write(f'White & {len(gamesWhiteStockfishWon)} & {len(gamesWhiteStockfishDrawn)} & {len(gamesWhiteStockfishLost)}\\\\\n')
-            file.write(f'Black & {len(gamesBlackStockfishWon)} & {len(gamesBlackStockfishDrawn)} & {len(gamesBlackStockfishLost)}\\\\\n')
+            file.write(
+                f'Any & {len(gamesStockfishWon)} & {len(gamesStockfishDrawn)} & {len(gamesStockfishLost)}\\\\\n')
+            file.write(
+                f'White & {len(gamesWhiteStockfishWon)} & {len(gamesWhiteStockfishDrawn)} & {len(gamesWhiteStockfishLost)}\\\\\n')
+            file.write(
+                f'Black & {len(gamesBlackStockfishWon)} & {len(gamesBlackStockfishDrawn)} & {len(gamesBlackStockfishLost)}\\\\\n')
             file.write('\end{tabular}\n')
             file.write('\end{center}\n\n')
 
-            file.write("Below is a graph showing the number of games that is still active after $x$ number of moves.\n\n")
+            file.write(
+                "Below is a graph showing the number of games that is still active after $x$ number of moves.\n\n")
 
             file.write('\\begin{figure}')
             file.write('\\begin {tikzpicture}\n')
@@ -148,10 +210,12 @@ class ChessDatabase:
 
             file.write('\\end{axis}\n')
             file.write('\\end{tikzpicture}\n')
-            file.write('\caption{Mean moves: ' + str(self.getMean(onGoing)) + ', SD: ' + str(self.getSd(onGoing)) + '}\n')
+            file.write('\caption{Mean moves: ' + str(self.getMean(onGoing)
+                                                     ) + ', SD: ' + str(self.getSd(onGoing)) + '}\n')
             file.write('\end{figure}\n')
 
-            file.write("Below is a graph showing the number of games that is still active after $x$ number of moves.\n\n")
+            file.write(
+                "Below is a graph showing the number of games that is still active after $x$ number of moves.\n\n")
 
             file.write('\\begin{figure}')
             file.write('\\begin {tikzpicture}\n')
@@ -189,7 +253,7 @@ class ChessDatabase:
             file.write('};\n')
             file.write('\\addlegendentry{Stockfish Black}\n')
 
-            file.write('\include{dice.pgn}\n')
+            # file.write('\include{dice.pgn}\n')
 
             file.write('\\end{axis}\n')
             file.write('\\end{tikzpicture}\n')
@@ -199,18 +263,57 @@ class ChessDatabase:
             file.write('\\end{document}\n')
 
         # pip install basictex
-        os.system('pdflatex sometexfile.tex')
-        os.system('rm sometexfile.aux')
-        os.system('rm sometexfile.log')
+        # os.system('pdflatex sometexfile.tex')
+        # os.system('rm sometexfile.aux')
+        # os.system('rm sometexfile.log')
+
+    def addOpeningTableToPDF(self, filename: str, opening: str, depth: int = 0) -> None:
+        statsDictionary = self.getStatsDictionary()
+        with open(filename + '.tex', 'r') as file:
+            lines = file.readlines()
+            endLine = lines.pop()
+
+        with open(filename + '.tex', 'w') as file:
+            file.writelines(lines)
+            file.write('Here comes another table!!\n\n')
+            file.write('\\begin{table}[h!]\n')
+            file.write('\\centering\n')
+            file.write('\\begin{tabular}{l|rrrr}\n')
+            file.write('Color/Result & Wins & Draws & Losses & Total\\\\\n')
+            file.write('\hline\n')
+            file.write(
+                f'Any & {statsDictionary["numGamesStockfishWon"]} & {statsDictionary["numGamesStockfishDrawn"]} & {statsDictionary["numGamesStockfishLost"]} & {statsDictionary["numGamesAll"]}\\\\\n')
+            file.write(
+                f'White & {statsDictionary["numGamesWhiteStockfishWon"]} & {statsDictionary["numGamesWhiteStockfishDrawn"]} & {statsDictionary["numGamesWhiteStockfishLost"]} & {statsDictionary["numGamesWhiteStockfishAll"]}\\\\\n')
+            file.write(
+                f'Black & {statsDictionary["numGamesBlackStockfishWon"]} & {statsDictionary["numGamesBlackStockfishDrawn"]} & {statsDictionary["numGamesBlackStockfishLost"]} & {statsDictionary["numGamesBlackStockfishAll"]}\\\\\n')
+            file.write('\end{tabular}\n')
+            file.write(
+                '\caption{Statistics for Stockfish when opening is: ' + opening + '}\n')
+            file.write('\end{table}\n')
+            file.write(endLine)
+
+    def addOpeningsPlayedOverNTimesToPDF(self, filename: str, n=int) -> None:
+        openingsDict = self.getOpeningsPlayedOverNTimes(n=n)
+        for opening in openingsDict.keys():
+            new_db = ChessDatabase(
+                self.getFilteredListOfGamesByOpening(opening))
+            new_db.addOpeningTableToPDF(
+                filename=filename, opening=opening, depth=0)
 
 
 def main():
     db = ChessDatabase()
-    db.addGames()
     print()
-    db.createPdf()
-
-
+    filename = 'TinusTexFile'
+    db.createPdf(filename)
+    openings = db.getAllPlayedOpenings()
+    print(openings)
+    db.addOpeningsPlayedOverNTimesToPDF(filename=filename, n=50)
+    # for opening in openings:
+    #     new_db = ChessDatabase(db.getFilteredListOfGamesByOpening(opening))
+    #     new_db.addOpeningTableToPDF(
+    #         filename=filename, opening=opening, depth=0)
 
 
 if __name__ == '__main__':
