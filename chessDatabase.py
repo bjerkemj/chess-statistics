@@ -91,6 +91,19 @@ class ChessDatabase:
     # def getFilteredDataBaseByMoveSequence(self, moveSequence: dict) -> ChessDatabase:
     #     pass
 
+    def getStatisticsByMoveSequence(self, moveSequence: dict) -> tuple(int, int, int):
+        games = self.getFilteredListOfGamesByMoveSequence(
+            moveSequence=moveSequence)
+        numGames = len(games)
+        gamesWonByWhite = [game for game in games if game.getWhiteWon()
+                           for game in games]
+        numGamesWonByWhite = len(gamesWonByWhite)
+        gamesDrawn = [game for game in games if game.getDraw()
+                      for game in games]
+        numGamesDrawn = len(gamesDrawn)
+        numGamesWonByBlack = numGames - numGamesDrawn - numGamesWonByWhite
+        return (numGamesWonByWhite, numGamesDrawn, numGamesWonByBlack)
+
     def getStatsDictionary(self) -> dict:
         gamesAll = self.getAllGames()
         gamesStockfishWhite = self.filterStockfishWhite(gamesAll)
@@ -309,6 +322,7 @@ def main():
     db.createPdf(filename)
     openings = db.getAllPlayedOpenings()
     print(openings)
+    print('Bird' in openings)
     db.addOpeningsPlayedOverNTimesToPDF(filename=filename, n=50)
     # for opening in openings:
     #     new_db = ChessDatabase(db.getFilteredListOfGamesByOpening(opening))
