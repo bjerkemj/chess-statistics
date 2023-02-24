@@ -84,25 +84,32 @@ class ChessDatabase:
         return openingsDict
 
     def getFilteredListOfGamesByMoveSequence(self, moveSequence: dict) -> List[ChessGame]:
+        if len(moveSequence) == 0:
+            return self.games
         return [game for game in self.games if all([game.getMoveByNumber(moveNumber) == move for moveNumber, move in moveSequence.items()])]
 
     def getFilteredListOfGamesByOpening(self, opening: str) -> List[ChessGame]:
         return [game for game in self.games if game.getOpening() == opening]
-    # def getFilteredDataBaseByMoveSequence(self, moveSequence: dict) -> ChessDatabase:
-    #     pass
 
-    def getStatisticsByMoveSequence(self, moveSequence: dict) -> tuple(int, int, int):
+    def getFilteredListOfGamesByOpenings(self, openings: List[str]) -> List[ChessGame]:
+        if not openings:
+            return self.getAllGames()
+        return [game for game in self.games if game.getOpening() in openings]
+
+    def getStatisticsByMoveSequence(self, moveSequence: dict = {}) -> tuple:
         games = self.getFilteredListOfGamesByMoveSequence(
             moveSequence=moveSequence)
         numGames = len(games)
-        gamesWonByWhite = [game for game in games if game.getWhiteWon()
-                           for game in games]
+        # print(f'numGames = {numGames}')
+        gamesWonByWhite = [game for game in games if game.getWhiteWon()]
         numGamesWonByWhite = len(gamesWonByWhite)
-        gamesDrawn = [game for game in games if game.getDraw()
-                      for game in games]
+        gamesDrawn = [game for game in games if game.getDraw()]
         numGamesDrawn = len(gamesDrawn)
         numGamesWonByBlack = numGames - numGamesDrawn - numGamesWonByWhite
-        return (numGamesWonByWhite, numGamesDrawn, numGamesWonByBlack)
+        # print(f'numGamesDrawn = {numGamesDrawn}')
+        # print(f'numGamesBlackWon = {numGamesWonByBlack}')
+
+        return numGamesWonByWhite, numGamesDrawn, numGamesWonByBlack
 
     def getStatsDictionary(self) -> dict:
         gamesAll = self.getAllGames()

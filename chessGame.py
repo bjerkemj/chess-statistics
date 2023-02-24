@@ -35,7 +35,7 @@ class ChessGame:
     def getMoveByNumber(self, moveNumber: int) -> str:
         if type(moveNumber) == str:
             moveNumber = int(moveNumber)
-        return self.moves[moveNumber - 1][0]
+        return self.moves[moveNumber - 1][0] if moveNumber < self.totalMoves else False
 
     def getStockfishWon(self) -> bool:
         return self.getStockfishWhite() == self.getWhiteWon() and not self.getDraw()
