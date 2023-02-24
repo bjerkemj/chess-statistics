@@ -1,0 +1,6 @@
+# TODO
+
+1) Vurdere å endre chessDataBase slik at filtrering faktisk endrer hvilke spill som er i databasen.
+
+2) Task 8: Flere plots i samme figur. Lage plots med i) stockfishWhite, stockfishBlack og ii) stockfishWin, stockfishLoss 
+
