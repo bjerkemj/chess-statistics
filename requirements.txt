@@ -1,0 +1,4 @@
+pylatex
+graphviz
+# You need to add graphviz to path
+
