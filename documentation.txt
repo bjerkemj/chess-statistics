@@ -4,3 +4,4 @@
 
 2) Task 8: Flere plots i samme figur. Lage plots med i) stockfishWhite, stockfishBlack og ii) stockfishWin, stockfishLoss 
 
+For å tegne et tre på en god måte i tikz må vi nok bruke en ganske sofistikert tree traversel alogritme. 
