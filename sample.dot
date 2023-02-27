@@ -1,0 +1,32 @@
+digraph g {
+  fontname="Helvetica,Arial,sans-serif"
+  node [fontname="Helvetica,Arial,sans-serif" filledcolor = "white" style = "filled" shape = "circle" ]
+  edge [fontname="Helvetica,Arial,sans-serif"]
+  graph [fontsize=30 labelloc="t" label="" splines=true overlap=false rankdir = "LR"];
+  ratio = auto;
+"root" [style = "filled" fillcolor = "white"];
+"a" [style = "filled" fillcolor = "white"];
+"b" [style = "filled" fillcolor = "white"];
+"a_1" [style = "filled" fillcolor = "white"];
+"a_2" [style = "filled" fillcolor = "white"];
+a -> a_1;
+a -> a_2;
+"a_1_1" [style = "filled" fillcolor = "white"];
+"a_1_2" [style = "filled" fillcolor = "white"];
+"a_2_2" [style = "filled" fillcolor = "white"];
+"b_1" [style = "filled" fillcolor = "white"];
+"b_1_1" [style = "filled" fillcolor = "white"];
+"b_1_2" [style = "filled" fillcolor = "white"];
+
+
+
+root -> a [label = "text"];
+root -> b;
+
+b -> b_1;
+a_2 -> a_2_2;
+a_1 -> a_1_1;
+a_1 -> a_1_2;
+b_1 -> b_1_2;
+b_1 -> b_1_1;
+}

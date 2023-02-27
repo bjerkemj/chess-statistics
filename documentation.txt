@@ -5,4 +5,4 @@
 
 2) Task 8: Flere plots i samme figur. Lage plots med i) stockfishWhite, stockfishBlack og ii) stockfishWin, stockfishLoss 
 
-For å tegne et tre på en god måte i tikz må vi nok bruke en ganske sofistikert tree traversel alogritme. 
+Til plotting av tre: Nå er det slik at nodene i treet peker på sin forelder som er identifisert ved navnet til treet. Navnet til treet er på et format som gjør at det er teknisk sett mulig at flere (forskjellige) trær får samme ID. Dette gjør at forskjellige unike posisjoner kan enda opp med å peke på feil.

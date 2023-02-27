@@ -1,4 +1,4 @@
-#Tinus Alsos og Johan Bjerkem
+# Tinus Alsos og Johan Bjerkem
 
 from chessGame import ChessGame
 import os
@@ -6,6 +6,7 @@ import math
 from typing import List
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
+
 
 class ChessDatabase:
     def __init__(self, games: List[ChessGame] = []):
