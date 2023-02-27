@@ -98,61 +98,6 @@ class PDFCreator:
 
                     self.createTable(doc, 'l|rr', ["Identifier/Statistic", "Mean", "SD", "All games", db.getMean(database["gamesAll"]), db.getSd(database["gamesAll"]), "White", db.getMean(database["gamesStockfishWhite"]), db.getSd(database["gamesStockfishWhite"]), "Black", db.getMean(database["gamesStockfishBlack"]), db.getSd(database["gamesStockfishBlack"]), "Win", db.getMean(database["gamesStockfishWon"]), db.getSd(database["gamesStockfishWon"]), "Draw", db.getMean(database["gamesStockfishDrawn"]), db.getSd(database["gamesStockfishDrawn"]), "Lost", db.getMean(database["gamesStockfishLost"]), db.getSd(database["gamesStockfishLost"])])
         
-        # with doc.create(Section('Stockfish white')):
-        #     doc.append("In this section you will see statistics of the games where Stockfish was white.")
-                
-        #     with doc.create(Subsection('Plot')):
-        #         with doc.create(Figure(position='h!')) as whiteGamesPlot:
-        #             self.createPlot(database["dataPointsStockFishWhiteGames"], "Stockfish white", "turns", "games", "whiteGamesPlot")
-        #             whiteGamesPlot.add_image("whiteGamesPlot.png", width='200px')
-        #             whiteGamesPlot.add_caption("All games where Stockfish was white plotted against their length.")
-
-        #     with doc.create(Subsection('Tables')):
-        #         self.createTable(doc, 'l|rrr', ["Color/Result", "Wins", "Draws", "Losses", "White", len(database["gamesWhiteStockfishWon"]), len(database["gamesWhiteStockfishDrawn"]), len(database["gamesWhiteStockfishLost"])])
-
-        #         doc.append(LineBreak())
-        #         doc.append(LineBreak())
-
-        #         self.createTable(doc, 'l|rr', ["Color/Statistic", "Mean", "SD", "White", db.getMean(database["gamesStockfishWhite"]), db.getSd(database["gamesStockfishWhite"])])
-
-        # with doc.create(Section('Stockfish black')):
-        #     doc.append("In this section you will see statistics of the games where Stockfish was black.")
-                
-        #     with doc.create(Subsection('Plot')):
-        #         with doc.create(Figure(position='h!')) as blackGamesPlot:
-        #             self.createPlot(database["dataPointsStockFishBlackGames"], "Stockfish black", "turns", "games", "blackGamesPlot")
-        #             blackGamesPlot.add_image("blackGamesPlot.png", width='200px')
-        #             blackGamesPlot.add_caption("All games where Stockfish was black plotted against their length.")
-                
-
-        #     with doc.create(Subsection('Tables')):
-        #         self.createTable(doc, 'l|rrr', ["Color/Result", "Wins", "Draws", "Losses", "Black", len(database["gamesBlackStockfishWon"]), len(database["gamesBlackStockfishDrawn"]), len(database["gamesBlackStockfishLost"])])
-
-        #         doc.append(LineBreak())
-        #         doc.append(LineBreak())
-
-        #         self.createTable(doc, 'l|rr', ["Color/Statistic", "Mean", "SD", "Black", db.getMean(database["gamesStockfishBlack"]), db.getSd(database["gamesStockfishBlack"])])
-        #         doc.append(NewPage())
-
-        # with doc.create(Section('Stockfish won')):
-        #     doc.append("In this section you will see statistics of the games where Stockfish won.")
-                
-        #     with doc.create(Subsection('Plot')):
-        #         with doc.create(Figure(position='h!')) as wonGamesPlot:
-        #             self.createPlot(database["dataPointsStockFishWon"], "Stockfish won", "turns", "games", "wonGamesPlot")
-        #             wonGamesPlot.add_image("wonGamesPlot.png", width='200px')
-        #             wonGamesPlot.add_caption("All games where Stockfish won plotted against their length.")
-                
-
-        #     with doc.create(Subsection('Tables')):
-        #         self.createTable(doc, 'l|r', ["Color/Result", "Wins", "White", (database["gamesWhiteStockfishWon"]), "Black", len(database["gamesBlackStockfishWon"])])
-
-        #         doc.append(LineBreak())
-        #         doc.append(LineBreak())
-
-        #         self.createTable(doc, 'l|rr', ["Color/Statistic", "Mean", "SD", "Any", db.getMean(database["gamesStockfishBlack"]), db.getSd(database["gamesStockfishBlack"])])
-
-
         doc.generate_pdf(clean_tex=False)
         doc.generate_tex()
 
