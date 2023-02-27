@@ -1,3 +1,5 @@
+#Tinus Alsos og Johan Bjerkem
+
 import os
 import re
 ROOT = os.path.dirname(os.path.abspath(__file__))

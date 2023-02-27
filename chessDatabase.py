@@ -1,10 +1,11 @@
+#Tinus Alsos og Johan Bjerkem
+
 from chessGame import ChessGame
 import os
 import math
 from typing import List
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
-
 
 class ChessDatabase:
     def __init__(self, games: List[ChessGame] = []):
@@ -176,7 +177,7 @@ class ChessDatabase:
         with open(fileName + '.tex', 'w') as file:
             file.write('\\documentclass{article}\n')
             file.write('\\title{Stockfish chess statistics}\n')
-            file.write('\\author{Johan Bjerkem}\n')
+            file.write('\\author{Johan Bjerkem and Tinus F Alsos}\n')
             file.write('\\usepackage{multirow}')
             file.write('\\usepackage{pgfplots}')
 
