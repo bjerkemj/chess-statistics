@@ -4,6 +4,9 @@ from chessGame import ChessGame
 import os
 import math
 from typing import List
+from pylatex import Document, Section, Subsection, Command, Tabular, TikZ, Axis, Plot, LineBreak, Figure, StandAloneGraphic
+from matplotlib import pyplot as plt
+from pylatex.utils import italic, NoEscape
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
@@ -49,17 +52,17 @@ class ChessDatabase:
         return activeGames
 
     def getDataPoints(self, games: List[ChessGame]) -> str:
-        dataPoints = ""
+        dataPoints = []
         for i, game in enumerate(games):
-            dataPoints += f'({i},{game})'
+            dataPoints.append((game))
         return dataPoints
 
     def getMean(self, games: list):
-        return round(sum(games)/len(games), 2)
+        return round(sum([game.getTotalMoves() for game in games])/len(games), 2)
 
     def getSd(self, games: list):
         mean = self.getMean(games)
-        return round(math.sqrt(sum([abs(game - mean) for game in games])/len(games)), 2)
+        return round(math.sqrt(sum([abs(game.getTotalMoves() - mean) for game in games])/len(games)), 2)
 
     def _addGame(self, pgn: str) -> None:
         self.games.append(ChessGame(pgn))
@@ -147,7 +150,7 @@ class ChessDatabase:
                            'dataPointsAllGames': dataPointsAllGames, 'dataPointsStockFishWhiteGames': dataPointsStockFishWhiteGames, 'dataPointsStockFishBlackGames': dataPointsStockFishBlackGames, 'numGamesAll': len(gamesAll), 'numGamesStockfishWon': len(gamesStockfishWon), 'numGamesStockfishDrawn': len(gamesStockfishDrawn), 'numGamesStockfishLost': len(gamesStockfishLost), 'numGamesWhiteStockfishWon': len(gamesWhiteStockfishWon), 'numGamesWhiteStockfishDrawn': len(gamesWhiteStockfishDrawn), 'numGamesWhiteStockfishLost': len(gamesWhiteStockfishLost), 'numGamesWhiteStockfishAll': numWhiteStockfishAll, 'numGamesBlackStockfishAll': numBlackStockfishAll, 'numGamesBlackStockfishWon': len(gamesBlackStockfishWon), 'numGamesBlackStockfishDrawn': len(gamesBlackStockfishDrawn), 'numGamesBlackStockfishLost': len(gamesBlackStockfishLost)}
         return statsDictionary
 
-    def createPdf(self, fileName: str = 'sometexfile') -> None:
+    def createPdf(self, fileName: str = 'report') -> None:
         gamesAll = self.getAllGames()
         gamesStockfishWhite = self.filterStockfishWhite(gamesAll)
         gamesStockfishBlack = self.filterStockfishBlack(gamesAll)
@@ -169,124 +172,83 @@ class ChessDatabase:
         onGoing = self.getNumListOngoingGames(gamesAll)
         onGoingWhite = self.getNumListOngoingGames(gamesStockfishWhite)
         onGoingBlack = self.getNumListOngoingGames(gamesStockfishBlack)
+        onGoingWon= self.getNumListOngoingGames(gamesStockfishWon)
+        onGoingDrawn= self.getNumListOngoingGames(gamesStockfishDrawn)
+        onGoingLost = self.getNumListOngoingGames(gamesStockfishLost)
 
         dataPointsAllGames = self.getDataPoints(onGoing)
         dataPointsStockFishWhiteGames = self.getDataPoints(onGoingWhite)
         dataPointsStockFishBlackGames = self.getDataPoints(onGoingBlack)
+        dataPointsStockFishWon= self.getDataPoints(onGoingWon)
+        dataPointsStockFishDrawn= self.getDataPoints(onGoingDrawn)
+        dataPointsStockFishLost = self.getDataPoints(onGoingLost)
 
-        with open(fileName + '.tex', 'w') as file:
-            file.write('\\documentclass{article}\n')
-            file.write('\\title{Stockfish chess statistics}\n')
-            file.write('\\author{Johan Bjerkem and Tinus F Alsos}\n')
-            file.write('\\usepackage{multirow}')
-            file.write('\\usepackage{pgfplots}')
+        doc = Document(fileName)
+        doc.preamble.append(Command('title', 'Stockfish chess statistics'))
+        doc.preamble.append(Command('author', 'Tinus F Alsos and Johan Bjerkem'))
+        doc.preamble.append(Command('date', NoEscape(r'\today')))
+        doc.append(NoEscape(r'\maketitle'))
+        doc.append("In this document i will present tables, graphs and statistics about 2600 chess games played by the chess engine Stockfish. The game information is gathered from the document 'Stockfish_15_64-bit.commented.[2600].pgn'. Hopefully you find the data insightful.")
 
-            file.write('\\begin{document}\n')
-            file.write('\maketitle\n')
+        with doc.create(Subsection('Tables')):
+                doc.append("In the table below you can see the results of the 2600 games that Stockfish played.")
+                doc.append(LineBreak())
+                doc.append(LineBreak())
+                with doc.create(Tabular('l|rrr')) as table:
+                    table.add_row(("Color/Result", "Wins", "Draws", "Losses"))
+                    table.add_hline()
+                    table.add_row(("Any", len(gamesStockfishWon), len(gamesStockfishDrawn), len(gamesStockfishLost)))
+                    table.add_row(("White", len(gamesWhiteStockfishWon), len(gamesWhiteStockfishDrawn), len(gamesWhiteStockfishLost)))
+                    table.add_row(("Black", len(gamesBlackStockfishWon), len(gamesBlackStockfishDrawn), len(gamesBlackStockfishLost)))
 
-            file.write(
-                "In this document i will present tables, graphs and statistics about 2600 chess games played by the chess engine Stockfish. The game information is gathered from the document 'Stockfish\\textunderscore15\\textunderscore64-bit.commented.[2600].pgn'. Hopefully you find the data insightful.\\\\\\\\")
-            file.write("First we will have a look at the win, loss and draw statistics for Stockfish. The data is presented in a table, where you also can read what color Stockfish played as.\n")
+                doc.append(LineBreak())
+                doc.append(LineBreak())
+                doc.append("The table below shows the mean and standard deviation accompanying Figure 1.")
+                doc.append(LineBreak())
+                doc.append(LineBreak())
+                with doc.create(Tabular('l|rr')) as table:
+                    table.add_row(("Color/Result", "Mean", "SD"))
+                    table.add_hline()
+                    table.add_row(("Any", self.getMean(gamesAll), self.getSd(gamesAll)))
+                    table.add_row(("White", self.getMean(gamesStockfishWhite), self.getSd(gamesStockfishWhite)))
+                    table.add_row(("Black", self.getMean(gamesStockfishBlack), self.getSd(gamesStockfishBlack)))
 
-            file.write('\\begin{center}\n')
-            file.write('\\begin{tabular}{l|rrr}\n')
-            file.write('Color/Result & Wins & Draws & Losses\\\\\n')
-            file.write('\hline\n')
-            file.write(
-                f'Any & {len(gamesStockfishWon)} & {len(gamesStockfishDrawn)} & {len(gamesStockfishLost)}\\\\\n')
-            file.write(
-                f'White & {len(gamesWhiteStockfishWon)} & {len(gamesWhiteStockfishDrawn)} & {len(gamesWhiteStockfishLost)}\\\\\n')
-            file.write(
-                f'Black & {len(gamesBlackStockfishWon)} & {len(gamesBlackStockfishDrawn)} & {len(gamesBlackStockfishLost)}\\\\\n')
-            file.write('\end{tabular}\n')
-            file.write('\end{center}\n\n')
 
-            file.write(
-                "Below is a graph showing the number of games that is still active after $x$ number of moves.\n\n")
+        with doc.create(Subsection('Plots')):
+                with doc.create(Figure(position='h!')) as allGamesPlot:         
+                    plt.plot(dataPointsAllGames, label="any")
+                    plt.plot(dataPointsStockFishWhiteGames, label="white")
+                    plt.plot(dataPointsStockFishBlackGames, label="black")
+                    plt.xlabel("playes")
+                    plt.ylabel("games")
+                    plt.legend()
+                    plt.savefig("allGamesPlot.png")
+                    plt.clf()
+                    allGamesPlot.add_image("allGamesPlot.png", width='300px')
+                    allGamesPlot.add_caption('All games plotted against their length.')
 
-            file.write('\\begin{figure}')
-            file.write('\\begin {tikzpicture}\n')
-            file.write('\\begin{axis}[\n')
-            file.write('\txmin = 0, xmax = 425,\n')
-            file.write('\tymin = 0, ymax = 2700,\n')
-            file.write('\txtick distance = 50,\n')
-            file.write('\tytick distance = 300,\n')
-            file.write('\tgrid = both,\n')
-            file.write('\tminor tick num = 1,\n')
-            file.write('\tmajor grid style = {lightgray},\n')
-            file.write('\tminor grid style = {lightgray!25},\n')
-            file.write('\twidth = \\textwidth,\n')
-            file.write('\theight = 0.5\\textwidth,\n')
-            file.write('\txlabel = {$moves$},\n')
-            file.write('\tylabel = {$games$},]\n')
+                    plt.hist([game.getTotalMoves() for game in gamesAll], range=(0,250), label="any")
+                    plt.xlabel("playes")
+                    plt.ylabel("games")
+                    plt.savefig("histogram.png")
+                    plt.legend()
+                    plt.clf()
+                    allGamesPlot.add_image("histogram.png", width='300px')
+                    allGamesPlot.add_caption('Histogram of all games and their lengths. Looks normally distributed with a longer tail on the right side.')
 
-            file.write('\\addplot[\n')
-            file.write('\tsmooth,\n')
-            file.write('\tthick,\n')
-            file.write('\tred,\n')
-            file.write(']\n')
-            file.write('coordinates {\n')
-            file.write(dataPointsAllGames + "\n")
-            file.write('};\n')
+                    plt.plot(dataPointsStockFishWon, label="won")
+                    plt.plot(dataPointsStockFishDrawn, label="drawn")
+                    plt.plot(dataPointsStockFishLost, label="lost")
+                    plt.xlabel("playes")
+                    plt.ylabel("games")
+                    plt.legend()
+                    plt.savefig("winLossPlot.png")
+                    plt.clf()
+                    allGamesPlot.add_image("winLossPlot.png", width='300px')
+                    allGamesPlot.add_caption('Won, drawn and lost games plotted against their length.')
 
-            file.write('\\end{axis}\n')
-            file.write('\\end{tikzpicture}\n')
-            file.write('\caption{Mean moves: ' + str(self.getMean(onGoing)
-                                                     ) + ', SD: ' + str(self.getSd(onGoing)) + '}\n')
-            file.write('\end{figure}\n')
-
-            file.write(
-                "Below is a graph showing the number of games that is still active after $x$ number of moves.\n\n")
-
-            file.write('\\begin{figure}')
-            file.write('\\begin {tikzpicture}\n')
-            file.write('\\begin{axis}[\n')
-            file.write('\txmin = 0, xmax = 425,\n')
-            file.write('\tymin = 0, ymax = 1350,\n')
-            file.write('\txtick distance = 50,\n')
-            file.write('\tytick distance = 150,\n')
-            file.write('\tgrid = both,\n')
-            file.write('\tminor tick num = 1,\n')
-            file.write('\tmajor grid style = {lightgray},\n')
-            file.write('\tminor grid style = {lightgray!25},\n')
-            file.write('\twidth = \\textwidth,\n')
-            file.write('\theight = 0.5\\textwidth,\n')
-            file.write('\txlabel = {$moves$},\n')
-            file.write('\tylabel = {$games$},]\n')
-
-            file.write('\\addplot[\n')
-            file.write('\tsmooth,\n')
-            file.write('\tthick,\n')
-            file.write('\tblue,\n')
-            file.write(']\n')
-            file.write('coordinates {\n')
-            file.write(dataPointsStockFishWhiteGames + "\n")
-            file.write('};\n')
-            file.write('\\addlegendentry{Stockfish white}\n')
-
-            file.write('\\addplot[\n')
-            file.write('\tsmooth,\n')
-            file.write('\tthick,\n')
-            file.write('\tblack,\n')
-            file.write(']\n')
-            file.write('coordinates {\n')
-            file.write(dataPointsStockFishBlackGames + "\n")
-            file.write('};\n')
-            file.write('\\addlegendentry{Stockfish Black}\n')
-
-            # file.write('\include{dice.pgn}\n')
-
-            file.write('\\end{axis}\n')
-            file.write('\\end{tikzpicture}\n')
-            # file.write('\caption{Mean moves: ' + str(self.getMean(self.getTotalMoves())) + ', SD: ' + str(self.getSd(self.getTotalMoves())) + '}\n')
-            file.write('\end{figure}\n')
-
-            file.write('\\end{document}\n')
-
-        # pip install basictex
-        # os.system('pdflatex sometexfile.tex')
-        # os.system('rm sometexfile.aux')
-        # os.system('rm sometexfile.log')
+        doc.generate_pdf(clean_tex=False)
+        doc.generate_tex()
 
     def addOpeningTableToPDF(self, filename: str, opening: str, depth: int = 0) -> None:
         statsDictionary = self.getStatsDictionary()
@@ -325,13 +287,12 @@ class ChessDatabase:
 
 def main():
     db = ChessDatabase()
-    print()
-    filename = 'TinusTexFile'
-    db.createPdf(filename)
-    openings = db.getAllPlayedOpenings()
-    print(openings)
-    print('Bird' in openings)
-    db.addOpeningsPlayedOverNTimesToPDF(filename=filename, n=50)
+    # filename = 'TinusTexFile'
+    db.createPdf()
+    # openings = db.getAllPlayedOpenings()
+    # print(openings)
+    # print('Bird' in openings)
+    # db.addOpeningsPlayedOverNTimesToPDF(filename=filename, n=50)
     # for opening in openings:
     #     new_db = ChessDatabase(db.getFilteredListOfGamesByOpening(opening))
     #     new_db.addOpeningTableToPDF(
