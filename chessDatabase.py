@@ -142,13 +142,19 @@ class ChessDatabase:
         onGoing = self.getNumListOngoingGames(gamesAll)
         onGoingWhite = self.getNumListOngoingGames(gamesStockfishWhite)
         onGoingBlack = self.getNumListOngoingGames(gamesStockfishBlack)
+        onGoingWon= self.getNumListOngoingGames(gamesStockfishWon)
+        onGoingDrawn= self.getNumListOngoingGames(gamesStockfishDrawn)
+        onGoingLost = self.getNumListOngoingGames(gamesStockfishLost)
 
         dataPointsAllGames = self.getDataPoints(onGoing)
         dataPointsStockFishWhiteGames = self.getDataPoints(onGoingWhite)
         dataPointsStockFishBlackGames = self.getDataPoints(onGoingBlack)
+        dataPointsStockFishWon= self.getDataPoints(onGoingWon)
+        dataPointsStockFishDrawn= self.getDataPoints(onGoingDrawn)
+        dataPointsStockFishLost = self.getDataPoints(onGoingLost)
 
         statsDictionary = {'gamesAll': gamesAll, 'gamesStockfishWhite': gamesStockfishWhite, 'gamesStockfishBlack': gamesStockfishBlack, 'gamesStockfishWon': gamesStockfishWon, 'gamesStockfishDrawn': gamesStockfishDrawn, 'gamesStockfishLost': gamesStockfishLost, 'gamesWhiteStockfishWon': gamesWhiteStockfishWon, 'gamesWhiteStockfishDrawn': gamesWhiteStockfishDrawn, 'gamesWhiteStockfishLost': gamesWhiteStockfishLost, 'gamesBlackStockfishWon': gamesBlackStockfishWon, 'gamesBlackStockfishDrawn': gamesBlackStockfishDrawn, 'gamesBlackStockfishLost': gamesBlackStockfishLost, 'onGoing': onGoing, 'onGoingWhite': onGoingWhite, 'onGoingBlack': onGoingBlack,
-                           'dataPointsAllGames': dataPointsAllGames, 'dataPointsStockFishWhiteGames': dataPointsStockFishWhiteGames, 'dataPointsStockFishBlackGames': dataPointsStockFishBlackGames, 'numGamesAll': len(gamesAll), 'numGamesStockfishWon': len(gamesStockfishWon), 'numGamesStockfishDrawn': len(gamesStockfishDrawn), 'numGamesStockfishLost': len(gamesStockfishLost), 'numGamesWhiteStockfishWon': len(gamesWhiteStockfishWon), 'numGamesWhiteStockfishDrawn': len(gamesWhiteStockfishDrawn), 'numGamesWhiteStockfishLost': len(gamesWhiteStockfishLost), 'numGamesWhiteStockfishAll': numWhiteStockfishAll, 'numGamesBlackStockfishAll': numBlackStockfishAll, 'numGamesBlackStockfishWon': len(gamesBlackStockfishWon), 'numGamesBlackStockfishDrawn': len(gamesBlackStockfishDrawn), 'numGamesBlackStockfishLost': len(gamesBlackStockfishLost)}
+                           'dataPointsAllGames': dataPointsAllGames, 'dataPointsStockFishWhiteGames': dataPointsStockFishWhiteGames, 'dataPointsStockFishBlackGames': dataPointsStockFishBlackGames, 'dataPointsStockFishWon': dataPointsStockFishWon, 'dataPointsStockFishDrawn': dataPointsStockFishDrawn, 'dataPointsStockFishLost': dataPointsStockFishLost, 'numGamesAll': len(gamesAll), 'numGamesStockfishWon': len(gamesStockfishWon), 'numGamesStockfishDrawn': len(gamesStockfishDrawn), 'numGamesStockfishLost': len(gamesStockfishLost), 'numGamesWhiteStockfishWon': len(gamesWhiteStockfishWon), 'numGamesWhiteStockfishDrawn': len(gamesWhiteStockfishDrawn), 'numGamesWhiteStockfishLost': len(gamesWhiteStockfishLost), 'numGamesWhiteStockfishAll': numWhiteStockfishAll, 'numGamesBlackStockfishAll': numBlackStockfishAll, 'numGamesBlackStockfishWon': len(gamesBlackStockfishWon), 'numGamesBlackStockfishDrawn': len(gamesBlackStockfishDrawn), 'numGamesBlackStockfishLost': len(gamesBlackStockfishLost)}
         return statsDictionary
 
     def createPdf(self, fileName: str = 'report') -> None:
@@ -191,7 +197,18 @@ class ChessDatabase:
         doc.append(NoEscape(r'\maketitle'))
         doc.append("In this document i will present tables, graphs and statistics about 2600 chess games played by the chess engine Stockfish. The game information is gathered from the document 'Stockfish_15_64-bit.commented.[2600].pgn'. Hopefully you find the data insightful.")
 
-        with doc.create(Subsection('Tables')):
+        with doc.create(Section('I am a section')):
+            doc.append('Take a look at this beautiful plot:')
+
+            with doc.create(Figure(position='htbp')) as plot:
+                plot.add_plot(width=NoEscape(width), *args, **kwargs)
+                plot.add_caption('I am a caption.')
+
+            doc.append('Created using matplotlib.')
+
+            doc.append('Conclusion.')
+
+        with doc.create(Section('Tables')):
                 doc.append("In the table below you can see the results of the 2600 games that Stockfish played.")
                 doc.append(LineBreak())
                 doc.append(LineBreak())
@@ -236,6 +253,8 @@ class ChessDatabase:
                     plt.clf()
                     allGamesPlot.add_image("histogram.png", width='300px')
                     allGamesPlot.add_caption('Histogram of all games and their lengths. Looks normally distributed with a longer tail on the right side.')
+                    doc.append(LineBreak())
+
 
                     plt.plot(dataPointsStockFishWon, label="won")
                     plt.plot(dataPointsStockFishDrawn, label="drawn")
@@ -247,6 +266,8 @@ class ChessDatabase:
                     plt.clf()
                     allGamesPlot.add_image("winLossPlot.png", width='300px')
                     allGamesPlot.add_caption('Won, drawn and lost games plotted against their length.')
+                    doc.append(LineBreak())
+
 
         doc.generate_pdf(clean_tex=False)
         doc.generate_tex()

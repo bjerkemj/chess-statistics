@@ -1,4 +1,5 @@
 pylatex
 graphviz
+numpy
 # You need to add graphviz to path
 
