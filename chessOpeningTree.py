@@ -164,8 +164,8 @@ def createPNGfromDotFile(filename: str) -> None:
 
 
 if __name__ == '__main__':
-    depth = 1
-    filename = "leggo"
+    depth = 2
+    filename = "sicko"
     db = ChessDatabase()
     print(db.getOpeningsPlayedOverNTimes(50))
     tree = OpeningChessTree(chessDatabase=db, depth=depth)
@@ -178,10 +178,10 @@ if __name__ == '__main__':
     createPNGfromDotFile(filename)
     # print(str(tree.children[1]))
 
-    depth2 = 3
-    filename2 = "english_opening"
-    db2 = ChessDatabase(db.getFilteredListOfGamesByOpening('English opening'))
-    tree2 = OpeningChessTree(chessDatabase=db2, depth=depth2)
-    generateDotFileFromTree(tree=tree2, filename=filename2,
-                            depth=depth2, rootName='English opening')
-    createPNGfromDotFile(filename2)
+    # depth2 = 3
+    # filename2 = "english_opening"
+    # db2 = ChessDatabase(db.getFilteredListOfGamesByOpening('English opening'))
+    # tree2 = OpeningChessTree(chessDatabase=db2, depth=depth2)
+    # generateDotFileFromTree(tree=tree2, filename=filename2,
+    #                         depth=depth2, rootName='English opening')
+    # createPNGfromDotFile(filename2)
