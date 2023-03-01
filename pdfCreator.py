@@ -22,9 +22,9 @@ class PDFCreator:
     def __init__(self, filename: str) -> None:
         self.doc = Document(filename)
 
-    def makeTitle(self):
-        self.doc.preamble.append(Command("title", "Stockfish chess statistics"))
-        self.doc.preamble.append(Command("author", "Tinus F Alsos and Johan Bjerkem"))
+    def makeTitle(self, title: str = "Stockfish chess statistics", authors: str = "Tinus F Alsos and Johan Bjerkem"):
+        self.doc.preamble.append(Command("title", title))
+        self.doc.preamble.append(Command("author", authors))
         self.doc.preamble.append(Command("date", NoEscape(r"\today")))
         self.doc.append(NoEscape(r"\maketitle"))
 
