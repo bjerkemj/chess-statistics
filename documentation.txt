@@ -1,6 +1,8 @@
 #Tinus Alsos og Johan Bjerkem
 # TODO
 
+Vi har endret trekket 0-0 som betyr castle med 0C0 også har vi endret + i png notasjonen til P også byttet '=' med 'U'
+
 1) Vurdere å endre chessDataBase slik at filtrering faktisk endrer hvilke spill som er i databasen.
 
 2) Task 8: Flere plots i samme figur. Lage plots med i) stockfishWhite, stockfishBlack og ii) stockfishWin, stockfishLoss 

@@ -1,4 +1,6 @@
 pylatex
 graphviz
+matplotlib
+pdfLaTex
 # You need to add graphviz to path
 

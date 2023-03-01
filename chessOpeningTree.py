@@ -56,6 +56,12 @@ class ChessTree(Tree):
         self.parent = parent
         self.currentMove = len(moveSequence)
         self.name = moveSequence[str(self.currentMove)]
+        if '+' in self.name:
+            self.name = self.name.replace('+', 'P')  # P for pluss
+        if '-' in self.name:
+            self.name = self.name.replace('-', 'CAST')  # CAST for castle
+        if '=' in self.name:
+            self.name = self.name.replace('=', 'U')  # U for promote
         # print(
         #     f'Making new tree for moveNumber = {self.currentMove} and move = {self.name}')
 
@@ -172,7 +178,7 @@ if __name__ == '__main__':
     createPNGfromDotFile(filename)
     # print(str(tree.children[1]))
 
-    depth2 = 5
+    depth2 = 3
     filename2 = "english_opening"
     db2 = ChessDatabase(db.getFilteredListOfGamesByOpening('English opening'))
     tree2 = OpeningChessTree(chessDatabase=db2, depth=depth2)

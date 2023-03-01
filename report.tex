@@ -1,0 +1,60 @@
+\documentclass{article}%
+\usepackage[T1]{fontenc}%
+\usepackage[utf8]{inputenc}%
+\usepackage{lmodern}%
+\usepackage{textcomp}%
+\usepackage{lastpage}%
+\usepackage{graphicx}%
+%
+\title{Stockfish chess statistics}%
+\author{Tinus F Alsos and Johan Bjerkem}%
+\date{\today}%
+%
+\begin{document}%
+\normalsize%
+\maketitle%
+In this document i will present tables, graphs and statistics about 2600 chess games played by the chess engine Stockfish. The game information is gathered from the document 'Stockfish\_15\_64{-}bit.commented.{[}2600{]}.pgn'. Hopefully you find the data insightful.%
+\subsection{Tables}%
+\label{subsec:Tables}%
+In the table below you can see the results of the 2600 games that Stockfish played.%
+\linebreak%
+\linebreak%
+\begin{tabular}{l|rrr}%
+Color/Result&Wins&Draws&Losses\\%
+\hline%
+Any&992&1600&8\\%
+White&698&601&2\\%
+Black&294&999&6\\%
+\end{tabular}%
+\linebreak%
+\linebreak%
+The table below shows the mean and standard deviation accompanying Figure 1.%
+\linebreak%
+\linebreak%
+\begin{tabular}{l|rr}%
+Color/Result&Mean&SD\\%
+\hline%
+Any&120.26&5.26\\%
+White&117.33&5.37\\%
+Black&123.2&5.12\\%
+\end{tabular}
+
+%
+\subsection{Plots}%
+\label{subsec:Plots}%
+
+
+\begin{figure}[h!]%
+\centering%
+\includegraphics[width=300px]{allGamesPlot.png}%
+\caption{All games plotted against their length.}%
+\centering%
+\includegraphics[width=300px]{histogram.png}%
+\caption{Histogram of all games and their lengths. Looks normally distributed with a longer tail on the right side.}%
+\centering%
+\includegraphics[width=300px]{winLossPlot.png}%
+\caption{Won, drawn and lost games plotted against their length.}%
+\end{figure}
+
+%
+\end{document}
