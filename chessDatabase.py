@@ -162,8 +162,6 @@ class ChessDatabase:
         return statsDictionary
 
 
-
-
 def main():
     db = ChessDatabase()
     
