@@ -1,26 +1,17 @@
 from chessDatabase import ChessDatabase
 from pylatex import (
     MultiColumn,
-    Table,
     Document,
     Section,
     Subsection,
     Command,
     Tabular,
-    Center,
-    TikZ,
-    Axis,
-    Plot,
-    LineBreak,
     NewLine,
     Figure,
-    StandAloneGraphic,
-    NewPage,
 )
-from pylatex.utils import italic, NoEscape
+from pylatex.utils import NoEscape
 from matplotlib import pyplot as plt
 from chessOpeningTree import Tree
-import numpy as np
 
 
 class PDFCreator:
