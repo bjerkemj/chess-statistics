@@ -4,13 +4,12 @@ import os
 import re
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
-
 class ChessGame:
     requiredTags = ["Event", "Site", "Date",
                     "Round", "White", "Black", "Result"]
     optionalTags = ["ECO", "Opening", "PlyCount", "WhiteElo", "BlackElo"]
 
-    def __init__(self, pgn: str):
+    def __init__(self, pgn: str) ->  None:
         self.metaData = {}
         self.moves = []
         self.stockfishWhite = False

@@ -12,6 +12,7 @@ from pylatex import (
 from pylatex.utils import NoEscape
 from matplotlib import pyplot as plt
 from chessOpeningTree import Tree
+import os
 
 
 class PDFCreator:
@@ -267,6 +268,8 @@ class PDFCreator:
     def generate_pdf(self) -> None:
         self.doc.generate_pdf(clean_tex=False)
 
+    def deletePngs(self):
+        os.system('find . -name "*.png" -type f -delete')
 
 def main():
     db = ChessDatabase()
@@ -276,6 +279,7 @@ def main():
     pdf.createPdfExample(db)
     # pdf.addOpeningsPlayedOverNTimesToPDF(db)
     pdf.generate_pdf()
+    pdf.deletePngs()
     # pdf.createTable(
     #                 "l|rr",
     #                 [
