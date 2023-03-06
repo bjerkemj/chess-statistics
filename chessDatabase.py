@@ -14,8 +14,6 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 class ChessDatabase:
     def __init__(self, games: List[ChessGame] = []):
         self.games = games
-        if not self.games:
-            self.addGamesFromPortabelGameNotationFile()
 
     def getAllGames(self) -> List[ChessGame]:
         return self.games
@@ -92,6 +90,10 @@ class ChessDatabase:
         if len(moveSequence) == 0:
             return self.games
         return [game for game in self.games if all([game.getMoveByNumber(moveNumber) == move for moveNumber, move in moveSequence.items()])]
+    
+    def filterDatabaseMoveSequence(self, moveSequence: dict) -> None:
+        if moveSequence:
+            self.games = [game for game in self.games if all([game.getMoveByNumber(moveNumber) == move for moveNumber, move in moveSequence.items()])]
 
     def getFilteredListOfGamesByOpening(self, opening: str) -> List[ChessGame]:
         return [game for game in self.games if game.getOpening() == opening]
@@ -100,6 +102,12 @@ class ChessDatabase:
         if not openings:
             return self.getAllGames()
         return [game for game in self.games if game.getOpening() in openings]
+    
+    def filterDatabaseByOpenings(self, openings: List[str]) -> None:
+        if not openings:
+            pass
+        else:
+            self.games = [game for game in self.games if game.getOpening() in openings]
 
     def getStatisticsByMoveSequence(self, moveSequence: dict = {}) -> tuple:
         games = self.getFilteredListOfGamesByMoveSequence(

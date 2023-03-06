@@ -1,6 +1,8 @@
 #Tinus Alsos og Johan Bjerkem
 # TODO
 
+Det er en feil når man laster inn et ChessOpeningTree med en enkelåpning. Når jeg lastet med 'French' kjørte det evig. Fant ut av problemet: Når man lager en ny chessDatabase for å bruke til et nytt tre i ChessTree, så kan det hende det ikke eksisterer flere moves, da vil listen være tom også lastes alt sammen inn på ny
+
 Vi har endret trekket 0-0 som betyr castle med 0C0 også har vi endret + i png notasjonen til P også byttet '=' med 'U'
 
 1) Vurdere å endre chessDataBase slik at filtrering faktisk endrer hvilke spill som er i databasen.

@@ -1,3 +1,4 @@
+import time
 from chessDatabase import ChessDatabase
 from pylatex import (
     MultiColumn,
@@ -20,6 +21,8 @@ from pylatex import (
 from pylatex.utils import italic, NoEscape
 from matplotlib import pyplot as plt
 import numpy as np
+import os
+from chessOpeningTree import Tree, OpeningChessTree, ChessTree
 
 
 class PDFCreator:
@@ -79,6 +82,12 @@ class PDFCreator:
     def addSubSection(self, subSectionCaption: str) -> None:
         with self.doc.create(Subsection(subSectionCaption)):
             pass
+
+    def addPicture(self, filename: str, caption: str):
+        with self.doc.create(Figure(position = 'h!')) as figure:
+            figure.add_image(filename + '.png', placement=NoEscape('\centering'))
+            figure.add_caption(caption)
+
 
     def createPdfExample(self, db: ChessDatabase):
         database = db.getStatsDictionary()
@@ -211,44 +220,80 @@ class PDFCreator:
         self.addText(sectionText2)
 
         subsectionCaption = 'Stockfish Opening Winrate'
-        numGamesPlayed = 100
+        numGamesPlayed = 120
         subsectionText = f'We start by displaying the statistics for the openings that are played more than {numGamesPlayed} times.'
         self.addSubSection(subsectionCaption)
         self.addText(subsectionText)
         self.addOpeningsPlayedOverNTimesToPDF(self.chessDatabase, numGamesPlayed)
 
         subsectionCaption = 'Opening Trees'
-        subsectionText = 'We proceed with showing some opening trees to see what the best openings are. The color of a node indicates which color\'s turn it is to move. The edge from a node to another node contains the move that is being made, along with statistics on the winrate of doing that move. It is on the following format: MOVE W:numberOfWinsForWhiteIfMoveIsPlayed, D:numberOfDrawsIfMoveIsPlayed, L:numberOfLossesForWhiteIfMoveIsPlayed. L is equivelant to number of wins for black.'
-        moreSubsectionText = 'We can make trees for any opening played in the database used. We start with showing a tree going to move 2 for all openings.'
+        subsectionText = 'We proceed with showing some opening trees to see what the best openings are. The color of a node indicates which color\'s turn it is to move. The edge from a node to another node contains the move that is being made, along with statistics on the winrate of doing that move. It is on the following format: M/W/D/L where M is the move being made, W is the number of wins for white, D is the number of draws and L is the number of losses for white (equivalent to the number of wins for black). The move itselfs follows the portable game format with some exceptions: instead of + to show a check, we use C, instead of # to show checkmate, we use CM, instead of O-O-O to show queenside castle, we use QCastle, instead of O-O to show kingside castle, we use KCastle, and instead of using = to promote, we use P'
+        moreSubsectionText = 'We can make trees for any opening played in the database used. We start with showing a tree going to move 1 for all openings (if we go any deeper using without filtering openings, the tree is to large for the pdf document). Then, we show some selected openings at greater depth.'
 
         self.addSubSection(subSectionCaption=subsectionCaption)
         self.addText(subsectionText)
         self.addText(moreSubsectionText)
 
+        depth = 0
+        allOpeningsTree = OpeningChessTree(self.chessDatabase, depth = depth)
+        filename = 'allOpeningsTree'
+        figureCaption = "Tree of all openings at depth 1"
+        self.generateDotFileFromTree(tree = allOpeningsTree, filename = filename, depth = depth)
+        self.createPNGfromDotFile(filename=filename)
+        self.addPicture(filename=filename, caption=figureCaption)
+
+        depth = 5
+        opening = 'French'
+        tree = OpeningChessTree(chessDatabase=db, openings=[opening], depth=depth)
+        filename = opening
+        figureCaption = f'Tree of {opening} opening with depth {depth + 1}'
+        self.generateDotFileFromTree(tree = tree, filename = filename, depth = depth)
+        self.createPNGfromDotFile(filename=filename)
+        self.addPicture(filename=filename, caption=figureCaption)
+
+        depth = 10
+        opening = 'Dutch'
+        tree = OpeningChessTree(chessDatabase=db, openings=[opening], depth=depth)
+        filename = opening
+        figureCaption = f'Tree of {opening} opening with depth {depth + 1}'
+        self.generateDotFileFromTree(tree = tree, filename = filename, depth = depth)
+        self.createPNGfromDotFile(filename=filename)
+        self.addPicture(filename=filename, caption=figureCaption)
+
+        # pdf.generateDotFileFromTree(tree=tree, filename = opening, depth = 5, rootName=opening)
+        # print('dotfile generated in', time.time() - start, 'seconds')
+        # start = time.time()
+        # pdf.createPNGfromDotFile(filename=opening)
+        # print('PNGfile generated in', time.time() - start, 'seconds')
+        # start = time.time()
+        # pdf.addPicture(filename=opening, caption="Tree of French opening at depth 3")
+
+
 
     #Må fikses
-    def createPNGfromDotFile(filename: str) -> None:
+    def createPNGfromDotFile(self, filename: str) -> None:
         os.system(f"dot -Tpng {filename}.dot > {filename}.png")
+
     #Må fikses
-    def generateDotFileFromTree(tree: Tree, filename: str, depth: int = 2, rootName: str = None) -> None:
-        allText = getDotText(tree, depth, rootName)
+    def generateDotFileFromTree(self, tree: Tree, filename: str, depth: int = 2, rootName: str = None) -> None:
+        allText = self.getDotTextFromTree(tree, depth, rootName)
         with open(filename + '.dot', 'w') as file:
             file.write(
                 "digraph g {\nfontname=\"Helvetica,Arial,sans-serif\"\nnode [fontname=\"Helvetica,Arial,sans-serif\" filledcolor = \"white\" label = \"\" style = \"filled\" shape = \"circle\" ]\nedge [fontname=\"Helvetica,Arial,sans-serif\"]\ngraph [fontsize=30 labelloc=\"t\" label=\"\" splines=true overlap=false rankdir = \"LR\"];\nratio = auto;\n")
             file.write(allText)
             file.write("\n}")
     #Må fikses
-    def getDotText(tree: Tree, depth: int, rootName: str) -> str:
+    def getDotTextFromTree(self, tree: Tree, depth: int, rootName: str) -> str:
         string = ""
         children = tree.children
-        string = addRoot(string, tree=tree, name=rootName)
+        string = self.addRoot(string, tree=tree, name=rootName)
         run = True
         counter = 0
         while run:
             print(f"count = {counter}")
             new_children = []
             for child in children:
-                string = addNode(string, child)
+                string = self.addNode(string, child)
                 if child.isLeaf():
                     continue
                 else:
@@ -258,6 +303,33 @@ class PDFCreator:
             else:
                 children = new_children
             counter += 1
+        return string
+    
+    def getColor(self, tree: Tree) -> str:
+        color = tree.color
+        return '\"black\"' if color == 1 else '\"white\"'
+
+
+    def addNode(self, string: str, tree: Tree) -> str:
+        treeName = str(tree).split('_')[0]
+        string += f'\"{str(tree)}\" [style = \"filled\" fillcolor = {self.getColor(tree)}];\n'
+        string += f'{str(tree.parent)} -> {str(tree)} [label = \"{self.prettifyEdge(treeName)}\"];\n'
+        return string
+    
+    def prettifyEdge(self, treeName: str) -> str:
+        return treeName.replace('W', '/').replace('D', '/').replace('L', '/')
+
+
+    def addRoot(self, string: str, tree: Tree, name: str = None) -> str:
+        # print(type(string))
+        # print(type(str(tree)))
+        # print(str(tree))
+        # print(type(string))
+        # print(type(f'\"{str(tree)}\" [style = \"filled\" label = \"root\"];'))
+        if not name:
+            name = 'root'
+        # treeName = str(tree).split('_')[0]
+        string += f'\"{str(tree)}\" [style = \"filled\" fillcolor = \"white\" label = \"{name}\"];\n'
         return string
 
     def addOpeningsPlayedOverNTimesToPDF(self, chessDatabase: ChessDatabase, n: int = 50) -> None:
@@ -278,46 +350,28 @@ class PDFCreator:
 
 def main():
     db = ChessDatabase()
+    db.addGamesFromPortabelGameNotationFile()
 
     pdf = PDFCreator(chessDatabase = db, filename='test')
 
     pdf.createPdfExample(db)
+    print(db.getOpeningsPlayedOverNTimes(1))
     # pdf.addOpeningsPlayedOverNTimesToPDF(db)
+    # pdf.generate_pdf()
+    # opening = 'French'
+    # tree = OpeningChessTree(chessDatabase=db, openings=[opening], depth=5)
+    # start = time.time()
+    # pdf.generateDotFileFromTree(tree=tree, filename = opening, depth = 5, rootName=opening)
+    # print('dotfile generated in', time.time() - start, 'seconds')
+    # start = time.time()
+    # pdf.createPNGfromDotFile(filename=opening)
+    # print('PNGfile generated in', time.time() - start, 'seconds')
+    # start = time.time()
+    # pdf.addPicture(filename=opening, caption="Tree of French opening at depth 3")
+    # print('Picture added in', time.time() - start, 'seconds')
+    start = time.time()
     pdf.generate_pdf()
-    # pdf.createTable(
-    #                 "l|rr",
-    #                 [
-    #                     "Identifier/Statistic",
-    #                     "Mean",
-    #                     "SD",
-    #                     "All games",
-    #                     0,
-    #                     1,
-    #                     "White",
-    #                     2,
-    #                     3,
-    #                     "Black",
-    #                     4,5,
-    #                     "Win",
-    #                     6,7,
-    #                     "Draw",
-    #                     8,9,
-    #                     "Lost",
-    #                     10,11,
-    #                 ],
-    #             )
-    # pdf.generate_pdf()
-
-    # text = ''
-    # text2 = ''
-    # for i in range(30):
-    #     text += 'aaaaaa '
-    #     text2 += 'bbbbbb '
-    # pdf.addSection('Skrrt')
-    # pdf.addText(text)
-    # pdf.addSubSection('SubsSkrrrt')
-    # pdf.addText(text2)
-    # pdf.generate_pdf()
+    print('PDF generated in', time.time() - start, 'seconds')
 
 
     

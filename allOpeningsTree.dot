@@ -1,0 +1,29 @@
+digraph g {
+fontname="Helvetica,Arial,sans-serif"
+node [fontname="Helvetica,Arial,sans-serif" filledcolor = "white" label = "" style = "filled" shape = "circle" ]
+edge [fontname="Helvetica,Arial,sans-serif"]
+graph [fontsize=30 labelloc="t" label="" splines=true overlap=false rankdir = "LR"];
+ratio = auto;
+"rootW704D1600L296_VAPtOAsMMuUezRdq" [style = "filled" fillcolor = "white" label = "root"];
+"c4W57D124L25_MMBLCryvGnaggz" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> c4W57D124L25_MMBLCryvGnaggz [label = "c4/57/124/25"];
+"f4W3D7L6_QDbHMjSSxQWmkVN" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> f4W3D7L6_QDbHMjSSxQWmkVN [label = "f4/3/7/6"];
+"Nf3W60D156L23_zzaprkiCWVUESW" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> Nf3W60D156L23_zzaprkiCWVUESW [label = "Nf3/60/156/23"];
+"e4W345D746L149_ihMlSpHvaEqijv" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> e4W345D746L149_ihMlSpHvaEqijv [label = "e4/345/746/149"];
+"d3W0D1L1_mzXaISTVRI" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> d3W0D1L1_mzXaISTVRI [label = "d3/0/1/1"];
+"Nc3W2D3L3_swUcCSPAfXHtR" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> Nc3W2D3L3_swUcCSPAfXHtR [label = "Nc3/2/3/3"];
+"g3W3D15L0_DEUPSpCmmSHzYYjI" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> g3W3D15L0_DEUPSpCmmSHzYYjI [label = "g3/3/15/0"];
+"b3W1D3L1_wPEPVpUjWlHVJwof" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> b3W1D3L1_wPEPVpUjWlHVJwof [label = "b3/1/3/1"];
+"b4W1D2L1_tCjUKoxgDx" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> b4W1D2L1_tCjUKoxgDx [label = "b4/1/2/1"];
+"d4W232D543L87_yfSWGExHKJekaw" [style = "filled" fillcolor = "black"];
+rootW704D1600L296_VAPtOAsMMuUezRdq -> d4W232D543L87_yfSWGExHKJekaw [label = "d4/232/543/87"];
+
+}
