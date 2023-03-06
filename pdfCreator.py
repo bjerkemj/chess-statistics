@@ -222,7 +222,7 @@ class PDFCreator:
 
         subsectionCaption = 'Opening Trees'
         subsectionText = 'We proceed with showing some opening trees to see what the best openings are. The color of a node indicates which color\'s turn it is to move. The edge from a node to another node contains the move that is being made, along with statistics on the winrate of doing that move. It is on the following format: M/W/D/L where M is the move being made, W is the number of wins for white, D is the number of draws and L is the number of losses for white (equivalent to the number of wins for black). The move itselfs follows the portable game format with some exceptions: instead of + to show a check, we use C, instead of # to show checkmate, we use CM, instead of O-O-O to show queenside castle, we use QCastle, instead of O-O to show kingside castle, we use KCastle, and instead of using = to promote, we use P'
-        moreSubsectionText = 'We can make trees for any opening played in the database used. We start with showing a tree going to move 1 for all openings (if we go any deeper using without filtering openings, the tree is to large for the pdf document). Then, we show some selected openings at greater depth.'
+        moreSubsectionText = 'We can make trees for any opening played in the database used. We start with showing a tree going to move 1 for all openings (if we go any deeper using without filtering openings, the tree is to large for the pdf document). Then, we show some selected openings at greater depth. This subsection answers tasks 9-11'
 
         self.addSubSection(subSectionCaption=subsectionCaption)
         self.addText(subsectionText)
@@ -254,21 +254,14 @@ class PDFCreator:
         self.createPNGfromDotFile(filename=filename)
         self.addPicture(filename=filename, caption=figureCaption)
 
-        # pdf.generateDotFileFromTree(tree=tree, filename = opening, depth = 5, rootName=opening)
-        # print('dotfile generated in', time.time() - start, 'seconds')
-        # start = time.time()
-        # pdf.createPNGfromDotFile(filename=opening)
-        # print('PNGfile generated in', time.time() - start, 'seconds')
-        # start = time.time()
-        # pdf.addPicture(filename=opening, caption="Tree of French opening at depth 3")
 
 
 
-    #Må fikses
+    
     def createPNGfromDotFile(self, filename: str) -> None:
         os.system(f"dot -Tpng {filename}.dot > {filename}.png")
 
-    #Må fikses
+    
     def generateDotFileFromTree(self, tree: Tree, filename: str, depth: int = 2, rootName: str = None) -> None:
         allText = self.getDotTextFromTree(tree, depth, rootName)
         with open(filename + '.dot', 'w') as file:
@@ -276,7 +269,7 @@ class PDFCreator:
                 "digraph g {\nfontname=\"Helvetica,Arial,sans-serif\"\nnode [fontname=\"Helvetica,Arial,sans-serif\" filledcolor = \"white\" label = \"\" style = \"filled\" shape = \"circle\" ]\nedge [fontname=\"Helvetica,Arial,sans-serif\"]\ngraph [fontsize=30 labelloc=\"t\" label=\"\" splines=true overlap=false rankdir = \"LR\"];\nratio = auto;\n")
             file.write(allText)
             file.write("\n}")
-    #Må fikses
+    
     def getDotTextFromTree(self, tree: Tree, depth: int, rootName: str) -> str:
         string = ""
         children = tree.children
