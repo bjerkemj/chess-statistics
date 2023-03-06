@@ -1,26 +1,20 @@
+#Tinus Alsos og Johan Bjerkem
 import time
 from chessDatabase import ChessDatabase
 from pylatex import (
     MultiColumn,
-    Table,
     Document,
     Section,
     Subsection,
     Command,
     Tabular,
-    Center,
-    TikZ,
-    Axis,
-    Plot,
-    LineBreak,
     NewLine,
     Figure,
-    StandAloneGraphic,
-    NewPage,
 )
-from pylatex.utils import italic, NoEscape
+from pylatex.utils import NoEscape
 from matplotlib import pyplot as plt
-import numpy as np
+from chessOpeningTree import Tree
+import os
 import os
 from chessOpeningTree import Tree, OpeningChessTree, ChessTree
 
@@ -347,6 +341,8 @@ class PDFCreator:
     def generate_pdf(self) -> None:
         self.doc.generate_pdf(clean_tex=False)
 
+    def deletePngs(self):
+        os.system('find . -name "*.png" -type f -delete')
 
 def main():
     db = ChessDatabase()
