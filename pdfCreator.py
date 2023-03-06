@@ -19,6 +19,7 @@ from pylatex import (
 )
 from pylatex.utils import italic, NoEscape
 from matplotlib import pyplot as plt
+from chessOpeningTree import Tree
 import numpy as np
 
 
