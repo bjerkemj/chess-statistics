@@ -1,5 +1,3 @@
-#Tinus Alsos og Johan Bjerkem
-
 import os
 import re
 ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -131,26 +129,3 @@ class ChessGame:
             self.draw = True
             return
         self.whiteWon = True if self.metaData["Result"] == "1-0" else False
-
-
-def main():
-    cg1 = None
-    with open(os.path.join(ROOT, "oneGame.pgn"), "r") as f:
-        str = ""
-        for line in f:
-            str += line
-        cg1 = ChessGame(str)
-        cg1.savePng("saveOneGame")
-        print(cg1.getDraw())
-        print(cg1.getTotalMoves())
-        print(f"metaData:\n {cg1.metaData}")
-        print('\n ----------')
-        print(f"moves:\n {cg1.moves}")
-        print('\n ----------')
-        print(f"totalMoves:\n {cg1.totalMoves}")
-        print('\n ----------')
-        print(cg1.getMoveByNumber(2))
-
-
-if __name__ == '__main__':
-    main()

@@ -1,3 +1,5 @@
+#Tinus Alsos og Johan Bjerkem
+
 from chessDatabase import ChessDatabase
 from pylatex import (
     MultiColumn,
