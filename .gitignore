@@ -134,4 +134,5 @@ dmypy.json
 *.aux
 *.png
 *.tex
+*.dot
 .DS_Store
