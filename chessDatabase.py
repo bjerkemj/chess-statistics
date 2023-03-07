@@ -4,12 +4,7 @@ from chessGame import ChessGame
 import os
 import math
 from typing import List
-from pylatex import Document, Section, Subsection, Command, Tabular, TikZ, Axis, Plot, LineBreak, Figure, StandAloneGraphic
-from matplotlib import pyplot as plt
-from pylatex.utils import italic, NoEscape
-
 ROOT = os.path.dirname(os.path.abspath(__file__))
-
 
 class ChessDatabase:
     def __init__(self, games: List[ChessGame] = []):
