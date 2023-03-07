@@ -51,10 +51,10 @@ class ChessDatabase:
             dataPoints.append((game))
         return dataPoints
 
-    def getMean(self, games: list):
+    def getMean(self, games: list) -> float:
         return round(sum([game.getTotalMoves() for game in games])/len(games), 2)
 
-    def getSd(self, games: list):
+    def getSd(self, games: list) -> float:
         mean = self.getMean(games)
         return round(math.sqrt(sum([abs(game.getTotalMoves() - mean) for game in games])/len(games)), 2)
 
@@ -155,11 +155,3 @@ class ChessDatabase:
         statsDictionary = {'gamesAll': gamesAll, 'gamesStockfishWhite': gamesStockfishWhite, 'gamesStockfishBlack': gamesStockfishBlack, 'gamesStockfishWon': gamesStockfishWon, 'gamesStockfishDrawn': gamesStockfishDrawn, 'gamesStockfishLost': gamesStockfishLost, 'gamesWhiteStockfishWon': gamesWhiteStockfishWon, 'gamesWhiteStockfishDrawn': gamesWhiteStockfishDrawn, 'gamesWhiteStockfishLost': gamesWhiteStockfishLost, 'gamesBlackStockfishWon': gamesBlackStockfishWon, 'gamesBlackStockfishDrawn': gamesBlackStockfishDrawn, 'gamesBlackStockfishLost': gamesBlackStockfishLost, 'onGoing': onGoing, 'onGoingWhite': onGoingWhite, 'onGoingBlack': onGoingBlack,
                            'dataPointsAllGames': dataPointsAllGames, 'dataPointsStockFishWhiteGames': dataPointsStockFishWhiteGames, 'dataPointsStockFishBlackGames': dataPointsStockFishBlackGames, 'dataPointsStockFishWon': dataPointsStockFishWon, 'dataPointsStockFishDrawn': dataPointsStockFishDrawn, 'dataPointsStockFishLost': dataPointsStockFishLost, 'numGamesAll': len(gamesAll), 'numGamesStockfishWon': len(gamesStockfishWon), 'numGamesStockfishDrawn': len(gamesStockfishDrawn), 'numGamesStockfishLost': len(gamesStockfishLost), 'numGamesWhiteStockfishWon': len(gamesWhiteStockfishWon), 'numGamesWhiteStockfishDrawn': len(gamesWhiteStockfishDrawn), 'numGamesWhiteStockfishLost': len(gamesWhiteStockfishLost), 'numGamesWhiteStockfishAll': numWhiteStockfishAll, 'numGamesBlackStockfishAll': numBlackStockfishAll, 'numGamesBlackStockfishWon': len(gamesBlackStockfishWon), 'numGamesBlackStockfishDrawn': len(gamesBlackStockfishDrawn), 'numGamesBlackStockfishLost': len(gamesBlackStockfishLost)}
         return statsDictionary
-
-def main():
-    db = ChessDatabase()
-    
-
-
-if __name__ == '__main__':
-    main()
