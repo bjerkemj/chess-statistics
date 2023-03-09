@@ -1,5 +1,7 @@
 import os
 import re
+import xlsxwriter
+import openpyxl
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 class ChessGame:
@@ -7,14 +9,17 @@ class ChessGame:
                     "Round", "White", "Black", "Result"]
     optionalTags = ["ECO", "Opening", "PlyCount", "WhiteElo", "BlackElo"]
 
-    def __init__(self, pgn: str) ->  None:
+    def __init__(self, pgn: str = None, xlsxName: str = None) ->  None:
         self.metaData = {}
         self.moves = []
         self.stockfishWhite = False
         self.draw = False
         self.whiteWon = False
         self.totalMoves = 0
-        self.loadPng(pgn)
+        if pgn != None:
+            self.loadPgn(pgn)
+        else:
+            self.loadXlsx(xlsxName)
 
     def getStockfishWhite(self) -> bool:
         return self.stockfishWhite
@@ -34,7 +39,7 @@ class ChessGame:
     def getMoveByNumber(self, moveNumber: int) -> str:
         if type(moveNumber) == str:
             moveNumber = int(moveNumber)
-        return self.moves[moveNumber - 1][0] if moveNumber < self.totalMoves else False
+        return self.moves[moveNumber - 1][0] if moveNumber <= self.totalMoves else False
 
     def getStockfishWon(self) -> bool:
         return self.getStockfishWhite() == self.getWhiteWon() and not self.getDraw()
@@ -60,7 +65,7 @@ class ChessGame:
     def getStockfishBlackDraw(self) -> bool:
         return not self.getStockfishWhite() and self.getDraw()
 
-    def loadPng(self, pgn: str) -> None:
+    def loadPgn(self, pgn: str) -> None:
         split = pgn.split("\n")
         dataSplitIndex = split.index("")
         metaDataText = " ".join(split[:dataSplitIndex])
@@ -120,6 +125,52 @@ class ChessGame:
 
             f.writelines(gameDataText)
             f.write(self.metaData["Result"] + "\n")
+
+    def saveXlsx(self, saveName: str) -> None:
+        os.system('rm ' + saveName + '.xlsx')
+        workbook = xlsxwriter.Workbook(saveName + '.xlsx')
+        worksheet = workbook.add_worksheet()
+
+        row = 0
+        for key, value in self.metaData.items():
+                worksheet.write(row, 0, key)
+                worksheet.write(row, 1, value)
+                row += 1
+
+        row += 1
+        column = 0
+        for move in self.moves:
+            worksheet.write(row, column, move[0])
+            worksheet.write(row, column+1, move[1])
+            if column == 0:
+                column = 2
+            else:
+                column = 0
+                row+=1
+
+        workbook.close()
+
+    def loadXlsx(self, xlsxName: str):
+        wookbook = openpyxl.load_workbook(xlsxName + '.xlsx', data_only=True)
+        worksheet = wookbook.active
+        pgnString = ""
+
+        for i, row in enumerate(worksheet.iter_rows()):
+            if row[0].internal_value == None:
+                datasplit = i
+                break
+            pgnString += "[" + row[0].internal_value + ' "' + row[1].internal_value +'"' + "]\n"
+
+        pgnString += "\n"
+
+        i = 1
+        for row in worksheet.iter_rows(min_row=datasplit+2):
+            pgnString += str(i) + ". " + row[0].internal_value + " {" + row[1].internal_value + "} "
+            if row[2].internal_value != None:
+                pgnString += row[2].internal_value + " {" + row[3].internal_value + "} "
+            i+=1
+        
+        self.loadPgn(pgnString)
 
     def updateGameData(self) -> None:
         self.stockfishWhite = True if re.search(

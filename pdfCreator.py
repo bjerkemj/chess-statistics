@@ -18,7 +18,6 @@ import os
 import os
 from chessOpeningTree import Tree, OpeningChessTree, ChessTree
 
-
 class PDFCreator:
     def __init__(self, chessDatabase: ChessDatabase, filename: str) -> None:
         self.doc = Document(filename)
@@ -30,8 +29,6 @@ class PDFCreator:
         self.doc.preamble.append(Command("author", authors))
         self.doc.preamble.append(Command("date", NoEscape(r"\today")))
         self.doc.append(NoEscape(r"\maketitle"))
-
-    
 
     def createTable(self, size, data, tableCaption: str = ''):
         self.tableNumber += 1
@@ -55,7 +52,6 @@ class PDFCreator:
         self.doc.append(NewLine())
         self.doc.append(NewLine())
         
-
     def createPlot(self, datapoints, label, xlabel, ylabel, filename):
         for i, points in enumerate(datapoints):
             plt.plot(points, label=label[i])
@@ -81,7 +77,6 @@ class PDFCreator:
         with self.doc.create(Figure(position = 'h!')) as figure:
             figure.add_image(filename + '.png', placement=NoEscape('\centering'))
             figure.add_caption(caption)
-
 
     def createPdfExample(self, db: ChessDatabase):
         database = db.getStatsDictionary()
@@ -136,7 +131,6 @@ class PDFCreator:
             histoPlot.add_caption(
                 "Histogram of all games and their lengths. Looks normally distributed with a longer tail on the right side."
             )
-
 
         with self.doc.create(Figure(position="h!")) as winLossPlot:
             datapoints = [
@@ -253,15 +247,10 @@ class PDFCreator:
         self.generateDotFileFromTree(tree = tree, filename = filename, depth = depth, rootName=opening)
         self.createPNGfromDotFile(filename=filename)
         self.addPicture(filename=filename, caption=figureCaption)
-
-
-
-
     
     def createPNGfromDotFile(self, filename: str) -> None:
         os.system(f"dot -Tpng {filename}.dot > {filename}.png")
 
-    
     def generateDotFileFromTree(self, tree: Tree, filename: str, depth: int = 2, rootName: str = None) -> None:
         allText = self.getDotTextFromTree(tree, depth, rootName)
         with open(filename + '.dot', 'w') as file:
@@ -334,8 +323,12 @@ class PDFCreator:
     def generate_pdf(self) -> None:
         self.doc.generate_pdf(clean_tex=False)
 
-    def deletePngs(self):
+    def deleteAllPngs(self):
         os.system('find . -name "*.png" -type f -delete')
+
+    def deleteAllDots(self):
+        pass
+        os.system('find . -name "*.dot" -type f -delete')
 
 def main():
     db = ChessDatabase()
@@ -361,6 +354,8 @@ def main():
     start = time.time()
     pdf.generate_pdf()
     print('PDF generated in', time.time() - start, 'seconds')
+    pdf.deleteAllPngs()
+
 
 
     
