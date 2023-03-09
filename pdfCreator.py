@@ -334,8 +334,12 @@ class PDFCreator:
     def generate_pdf(self) -> None:
         self.doc.generate_pdf(clean_tex=False)
 
-    def deletePngs(self):
+    def deleteAllPngs(self):
         os.system('find . -name "*.png" -type f -delete')
+
+    def deleteAllDots(self):
+        pass
+        os.system('find . -name "*.dot" -type f -delete')
 
 def main():
     db = ChessDatabase()
@@ -361,6 +365,8 @@ def main():
     start = time.time()
     pdf.generate_pdf()
     print('PDF generated in', time.time() - start, 'seconds')
+    pdf.deleteAllPngs()
+
 
 
     
