@@ -1,5 +1,3 @@
-# Tinus Alsos og Johan Bjerkem
-
 from chessGame import ChessGame
 import os
 import math

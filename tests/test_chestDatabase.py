@@ -35,3 +35,19 @@ elementsAreInts = all([isinstance(gameLength, int) for gameLength in ongoingGame
 
 assert elementsAreInts, \
     f"getNumListOngoingGames should return a list of ints but it was not a list of ints."
+
+db.filterDatabaseByOpenings(["QGA"])
+
+assert len(db.getAllGames()) == 30, \
+    f"Database should have 30 games with the QGA opening but was {len(db.getAllGames())}"
+
+assert db.getAllGames()[0].getOpening() == "QGA", \
+    f"Databases first game should have opening QGA opening but was {db.getAllGames()[0].getOpening()}"
+
+playedOpenings = db.getAllPlayedOpenings()
+
+assert isinstance(playedOpenings, list), \
+    f"Database function getAllPlayedOpenings should return a list but was {type(playedOpenings)}"
+
+assert len(playedOpenings) == 1, \
+    f"Database should contain 1 played opening but was {len(playedOpenings)}"
