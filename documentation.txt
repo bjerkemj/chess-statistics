@@ -10,3 +10,18 @@ Vi har endret trekket 0-0 som betyr castle med 0C0 også har vi endret + i png n
 2) Task 8: Flere plots i samme figur. Lage plots med i) stockfishWhite, stockfishBlack og ii) stockfishWin, stockfishLoss 
 
 Til plotting av tre: Nå er det slik at nodene i treet peker på sin forelder som er identifisert ved navnet til treet. Navnet til treet er på et format som gjør at det er teknisk sett mulig at flere (forskjellige) trær får samme ID. Dette gjør at forskjellige unike posisjoner kan enda opp med å peke på feil.
+
+All functionality we could produce easily ourself we have done, but often we resorted to external libraries. To mention some we used pylatex for easy LaTeX creation and for generating the tree plots we used graphviz.
+For our classes ChessGame and ChessDatabase we created test files in the tests folder. These came in handy when changing core functionality and making sure that things still worked as intended.
+
+2.1 Games:
+In chessGame.py we created a class that can store a single game and all the information we can gather from a .png or .xlsx file. A game can also be saved to those formats. We chose to create no set-functions as all the information about a game is set once it's initiated, and never again to be changed. This covers task 1, 2, 3 and 5.
+
+chessDatabase.py contains a class that stores several games. This class can filter games by different methods. Different filtering methods are: by opening, by win/loss/draw, by color of Stockfish, etc. This covers task 4.
+
+2.2 Statistics:
+We created a class for the creation and handling of LaTeX in pdfCreator.py. Since LaTeX is a very specific markup language it's difficult the create dynamic functions that can create different reports. We tried our best to split various elements of the report, such as tables and sections, into their own functions. This covers task 6.
+
+When plotting different statistics, the statistics are first generated from the ChessDatabase class. This can be standard deviation, mean or ongoing games. After that the statistics are generated they are passed to a function in PDFCreator for plotting in pyplot. After they are saved as .png we add them to the .tex file. After the file is finished generating we also access the terminal and delete the .png files, as they only clutter the folder. This covers task 7 and 8.
+
+2.3 Openings:
