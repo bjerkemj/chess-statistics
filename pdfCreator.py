@@ -241,7 +241,7 @@ class PDFCreator:
         tree = OpeningChessTree(chessDatabase=db, openings=[opening], depth=depth)
         filename = opening
         figureCaption = f'Tree of {opening} opening with depth {depth + 1}'
-        self.generateDotFileFromTree(tree = tree, filename = filename, depth = depth)
+        self.generateDotFileFromTree(tree = tree, filename = filename, depth = depth, rootName=opening)
         self.createPNGfromDotFile(filename=filename)
         self.addPicture(filename=filename, caption=figureCaption)
 
@@ -250,7 +250,7 @@ class PDFCreator:
         tree = OpeningChessTree(chessDatabase=db, openings=[opening], depth=depth)
         filename = opening
         figureCaption = f'Tree of {opening} opening with depth {depth + 1}'
-        self.generateDotFileFromTree(tree = tree, filename = filename, depth = depth)
+        self.generateDotFileFromTree(tree = tree, filename = filename, depth = depth, rootName=opening)
         self.createPNGfromDotFile(filename=filename)
         self.addPicture(filename=filename, caption=figureCaption)
 
