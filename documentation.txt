@@ -1,8 +1,7 @@
 #Tinus Alsos og Johan Bjerkem
-# TODO
-Test på chessOpeningTree
-Rydde opp i PDFCreater
-Skriv 
+
+
+
 
 
 Interessant: Det finnes to spill som er identiske: De varer 34 trekk og avsluttes med Bf5, begge ender som draws.

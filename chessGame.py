@@ -100,8 +100,8 @@ class ChessGame:
 
         self.updateGameData()
 
-    def savePGN(self, saveName: str) -> None:
-        with open(os.path.join(ROOT, saveName + ".pgn"), "w") as f:
+    def savePgn(self, saveName: str, type: str = "a") -> None:
+        with open(os.path.join(ROOT, saveName + ".pgn"), type) as f:
             for key, value in self.metaData.items():
                 f.write(f"[{key} \"{value}\"]\n")
             f.write("\n")
@@ -124,7 +124,7 @@ class ChessGame:
                 index = spaceIndex
 
             f.writelines(gameDataText)
-            f.write(self.metaData["Result"] + "\n")
+            f.write(self.metaData["Result"] + "\n\n")
 
     def saveXlsx(self, saveName: str) -> None:
         os.system('rm ' + saveName + '.xlsx')

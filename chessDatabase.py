@@ -1,4 +1,4 @@
-from chessGame import ChessGame
+from chessGame import ChessGame, ROOT
 import os
 import math
 from typing import List
@@ -66,6 +66,11 @@ class ChessDatabase:
             for i in range(0, len(metaDataGameInfoSplit), 2):
                 gameInfo = "\n\n".join(metaDataGameInfoSplit[i:i+2])
                 self._addGame(gameInfo)
+
+    def saveGamesToPortableGameNotationFile(self, filename: str = "SomeGamesSaved") -> None:
+        self.games[0].savePgn(filename, 'w')
+        for game in self.games[1:]:
+            game.savePgn(filename, 'a') 
 
     def getAllPlayedOpenings(self) -> List[str]:
         return list(set([game.getOpening() for game in self.games]))
@@ -154,12 +159,5 @@ class ChessDatabase:
                            'dataPointsAllGames': dataPointsAllGames, 'dataPointsStockFishWhiteGames': dataPointsStockFishWhiteGames, 'dataPointsStockFishBlackGames': dataPointsStockFishBlackGames, 'dataPointsStockFishWon': dataPointsStockFishWon, 'dataPointsStockFishDrawn': dataPointsStockFishDrawn, 'dataPointsStockFishLost': dataPointsStockFishLost, 'numGamesAll': len(gamesAll), 'numGamesStockfishWon': len(gamesStockfishWon), 'numGamesStockfishDrawn': len(gamesStockfishDrawn), 'numGamesStockfishLost': len(gamesStockfishLost), 'numGamesWhiteStockfishWon': len(gamesWhiteStockfishWon), 'numGamesWhiteStockfishDrawn': len(gamesWhiteStockfishDrawn), 'numGamesWhiteStockfishLost': len(gamesWhiteStockfishLost), 'numGamesWhiteStockfishAll': numWhiteStockfishAll, 'numGamesBlackStockfishAll': numBlackStockfishAll, 'numGamesBlackStockfishWon': len(gamesBlackStockfishWon), 'numGamesBlackStockfishDrawn': len(gamesBlackStockfishDrawn), 'numGamesBlackStockfishLost': len(gamesBlackStockfishLost)}
         return statsDictionary
     
-if __name__ == '__main__':
-    db = ChessDatabase()
-    db.addGamesFromPortabelGameNotationFile()
-    print(max(db.getTotalMovesOfGames(db.games)))
-    print(len([game for game in db.games if game.whiteWon]))
-    print(len([game for game in db.games if game.draw]))
-    print(len([game for game in db.games if not game.draw and not game.whiteWon]))
 
 

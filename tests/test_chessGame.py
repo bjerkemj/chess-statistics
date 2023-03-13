@@ -33,7 +33,7 @@ assert cg1.getMoveByNumber(4) == "Bg4", \
 assert cg1.getOpening() == "Bird's opening", \
     f"Game opening should be 'Bird's opening' but was {cg1.getOpening()}"
 
-cg1.savePGN("./tests/saveTestGame")
+cg1.savePgn("./tests/saveTestGame")
 
 assert filecmp.cmp('./tests/testGame.pgn', './tests/saveTestGame.pgn'), \
     f"The file created should have identical content to the original file"
