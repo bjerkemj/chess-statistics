@@ -5,6 +5,7 @@ Rydde opp i PDFCreater
 Skriv 
 
 
+Interessant: Det finnes to spill som er identiske: De varer 34 trekk og avsluttes med Bf5, begge ender som draws.
 
 Det er en feil når man laster inn et ChessOpeningTree med en enkelåpning. Når jeg lastet med 'French' kjørte det evig. Fant ut av problemet: Når man lager en ny chessDatabase for å bruke til et nytt tre i ChessTree, så kan det hende det ikke eksisterer flere moves, da vil listen være tom også lastes alt sammen inn på ny
 

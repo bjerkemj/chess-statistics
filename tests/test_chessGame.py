@@ -33,9 +33,9 @@ assert cg1.getMoveByNumber(4) == "Bg4", \
 assert cg1.getOpening() == "Bird's opening", \
     f"Game opening should be 'Bird's opening' but was {cg1.getOpening()}"
 
-# Må tilpasses windows (abspath os.path.join...)
 cg1.savePng("./tests/saveTestGame")
 
 assert filecmp.cmp('./tests/testGame.pgn', './tests/saveTestGame.pgn'), \
     f"The file created should have identical content to the original file"
+
 os.remove("./tests/saveTestGame.pgn")

@@ -2,10 +2,6 @@ import random
 import string
 from typing import List
 from chessDatabase import ChessDatabase
-from chessGame import ChessGame
-import os
-
-import uuid
 
 
 def color(x): return x % 2  # 0 is white, 1 is black
@@ -47,13 +43,6 @@ class OpeningChessTree(Tree):
             chessDatabase.getFilteredListOfGamesByOpenings(self.openingsInTree))
         self.color = 0
         self.currentMove = 0
-        # nextMoves = list(set([game.getMoveByNumber(
-        #     self.currentMove + 1) for game in chessDatabase.getAllGames() if game.getMoveByNumber(
-        #     self.currentMove + 1)]))
-        # listOfMoveSequences = []
-        # for move in nextMoves:
-        #     listOfMoveSequences.append({str(self.currentMove + 1): move})
-        # print(listOfMoveSequences)
         listOfMoveSequences = self.getPossibleNextMoves(dict())
         self.numGamesWonByWhite, self.numGamesDrawn, self.numGamesWonByBlack = chessDatabase.getStatisticsByMoveSequence()
         self.children = [ChessTree(
@@ -65,7 +54,6 @@ class ChessTree(Tree):
     def __init__(self, parent: Tree, chessDatabase: ChessDatabase, moveSequence: dict, depth: int) -> None:
         self.parent = parent
         self.currentMove = len(moveSequence)
-        # print('New tree ', self.currentMove)
         self.id = getRandomID()
         self.name = moveSequence[str(self.currentMove)]
         if '+' in self.name:
@@ -77,26 +65,16 @@ class ChessTree(Tree):
             self.name = self.name.replace('O-O', 'KCastle') # KCastle for Kindside castle
         if '=' in self.name:
             self.name = self.name.replace('=', 'P')  # P for promote
-        # print(
-        #     f'Making new tree for moveNumber = {self.currentMove} and move = {self.name}')
-
         self.numGamesWonByWhite, self.numGamesDrawn, self.numGamesWonByBlack = chessDatabase.getStatisticsByMoveSequence(
             moveSequence)
         self.color = color(self.currentMove)
         self.chessDatabase = ChessDatabase(
             chessDatabase.getFilteredListOfGamesByMoveSequence(moveSequence))
         listOfMoveSequences = self.getPossibleNextMoves(moveSequence)
-        if self.currentMove <= depth:
+        if self.currentMove <= depth and len(listOfMoveSequences) > 0:
             self.children = [ChessTree(
                 self, self.chessDatabase, sequence, depth) for sequence in listOfMoveSequences]
         else:
             self.children = None
 
 
-if __name__ == '__main__':
-    depth = 2
-    filename = "sicko"
-    db = ChessDatabase()
-    print(db.getOpeningsPlayedOverNTimes(50))
-    tree = OpeningChessTree(chessDatabase=db, depth=depth)
-    print('Opening tree made -----------')

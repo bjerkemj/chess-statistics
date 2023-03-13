@@ -5,13 +5,13 @@ from typing import List
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
 class ChessDatabase:
-    def __init__(self, games: List[ChessGame] = []):
+    def __init__(self, games: List[ChessGame] = []) -> None:
         self.games = games
 
     def getAllGames(self) -> List[ChessGame]:
         return self.games
 
-    def getTotalMovesOfGames(self, games: List[ChessGame]):
+    def getTotalMovesOfGames(self, games: List[ChessGame]) -> int:
         return [game.getTotalMoves() for game in games]
 
     def filterByMoves(self, games: List[ChessGame], playCount: int) -> List[ChessGame]:
@@ -153,3 +153,13 @@ class ChessDatabase:
         statsDictionary = {'gamesAll': gamesAll, 'gamesStockfishWhite': gamesStockfishWhite, 'gamesStockfishBlack': gamesStockfishBlack, 'gamesStockfishWon': gamesStockfishWon, 'gamesStockfishDrawn': gamesStockfishDrawn, 'gamesStockfishLost': gamesStockfishLost, 'gamesWhiteStockfishWon': gamesWhiteStockfishWon, 'gamesWhiteStockfishDrawn': gamesWhiteStockfishDrawn, 'gamesWhiteStockfishLost': gamesWhiteStockfishLost, 'gamesBlackStockfishWon': gamesBlackStockfishWon, 'gamesBlackStockfishDrawn': gamesBlackStockfishDrawn, 'gamesBlackStockfishLost': gamesBlackStockfishLost, 'onGoing': onGoing, 'onGoingWhite': onGoingWhite, 'onGoingBlack': onGoingBlack,
                            'dataPointsAllGames': dataPointsAllGames, 'dataPointsStockFishWhiteGames': dataPointsStockFishWhiteGames, 'dataPointsStockFishBlackGames': dataPointsStockFishBlackGames, 'dataPointsStockFishWon': dataPointsStockFishWon, 'dataPointsStockFishDrawn': dataPointsStockFishDrawn, 'dataPointsStockFishLost': dataPointsStockFishLost, 'numGamesAll': len(gamesAll), 'numGamesStockfishWon': len(gamesStockfishWon), 'numGamesStockfishDrawn': len(gamesStockfishDrawn), 'numGamesStockfishLost': len(gamesStockfishLost), 'numGamesWhiteStockfishWon': len(gamesWhiteStockfishWon), 'numGamesWhiteStockfishDrawn': len(gamesWhiteStockfishDrawn), 'numGamesWhiteStockfishLost': len(gamesWhiteStockfishLost), 'numGamesWhiteStockfishAll': numWhiteStockfishAll, 'numGamesBlackStockfishAll': numBlackStockfishAll, 'numGamesBlackStockfishWon': len(gamesBlackStockfishWon), 'numGamesBlackStockfishDrawn': len(gamesBlackStockfishDrawn), 'numGamesBlackStockfishLost': len(gamesBlackStockfishLost)}
         return statsDictionary
+    
+if __name__ == '__main__':
+    db = ChessDatabase()
+    db.addGamesFromPortabelGameNotationFile()
+    print(max(db.getTotalMovesOfGames(db.games)))
+    print(len([game for game in db.games if game.whiteWon]))
+    print(len([game for game in db.games if game.draw]))
+    print(len([game for game in db.games if not game.draw and not game.whiteWon]))
+
+

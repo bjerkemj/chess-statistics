@@ -100,7 +100,7 @@ class ChessGame:
 
         self.updateGameData()
 
-    def savePng(self, saveName: str) -> None:
+    def savePGN(self, saveName: str) -> None:
         with open(os.path.join(ROOT, saveName + ".pgn"), "w") as f:
             for key, value in self.metaData.items():
                 f.write(f"[{key} \"{value}\"]\n")
