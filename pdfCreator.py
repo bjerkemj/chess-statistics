@@ -22,7 +22,7 @@ class PDFCreator:
         self.tableNumber = 0
         self.chessDatabase = chessDatabase
 
-    def makeTitle(self, title: str = "Stockfish chess statistics", authors: str = "Tinus F Alsos and Johan Bjerkem"):
+    def makeTitle(self, title: str = "Stockfish Chess Statistics", authors: str = "Tinus F Alsos and Johan Bjerkem"):
         self.doc.preamble.append(Command("title", title))
         self.doc.preamble.append(Command("author", authors))
         self.doc.preamble.append(Command("date", NoEscape(r"\today")))
@@ -312,7 +312,6 @@ class PDFCreator:
         self.doc.generate_pdf(clean_tex=False)
 
     def deleteAllPngs(self):
-        path = os.path.dirname(os.path.abspath(__file__))
         path = os.getcwd()
         for file in os.listdir(path):
             if file.endswith('.png'):
@@ -320,7 +319,6 @@ class PDFCreator:
 
 
     def deleteAllDots(self):
-        path = os.path.dirname(os.path.abspath(__file__))
         path = os.getcwd()
         for file in os.listdir(path):
             if file.endswith('.dot'):
@@ -330,12 +328,9 @@ class PDFCreator:
 def main():
     db = ChessDatabase()
     db.addGamesFromPortabelGameNotationFile()
-
-    pdf = PDFCreator(chessDatabase = db, filename='test')
-
+    pdf = PDFCreator(chessDatabase = db, filename='CompleteExample')
     pdf.createPdfExample(db)
     pdf.generate_pdf()
-
     pdf.deleteAllDots()
     pdf.deleteAllPngs()
 
