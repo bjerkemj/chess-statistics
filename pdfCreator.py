@@ -255,7 +255,9 @@ class PDFCreator:
         allText = self.getDotTextFromTree(tree, depth, rootName)
         with open(filename + '.dot', 'w') as file:
             file.write(
-                "digraph g {\nfontname=\"Helvetica,Arial,sans-serif\"\nnode [fontname=\"Helvetica,Arial,sans-serif\" filledcolor = \"white\" label = \"\" style = \"filled\" shape = \"circle\" ]\nedge [fontname=\"Helvetica,Arial,sans-serif\"]\ngraph [fontsize=30 labelloc=\"t\" label=\"\" splines=true overlap=false rankdir = \"LR\"];\nratio = auto;\n")
+                "digraph g {\nfontname=\"Helvetica,Arial,sans-serif\"\nnode [fontname=\"Helvetica,Arial,sans-serif\" filledcolor = \"white\" label = \"\" style = \"filled\" shape = \"circle\" ]\nedge [fontname=\"Helvetica,Arial,sans-serif\"]\ngraph [fontsize=30 labelloc=\"t\" label=\"\" splines=true overlap=false];\nratio = auto;\n")
+                # "digraph g {\nfontname=\"Helvetica,Arial,sans-serif\"\nnode [fontname=\"Helvetica,Arial,sans-serif\" filledcolor = \"white\" label = \"\" style = \"filled\" shape = \"circle\" ]\nedge [fontname=\"Helvetica,Arial,sans-serif\"]\ngraph [fontsize=30 labelloc=\"t\" label=\"\" splines=true overlap=false rankdir = \"LR\"];\nratio = auto;\n")
+            
             file.write(allText)
             file.write("\n}")
     
@@ -355,6 +357,17 @@ def main():
     pdf.generate_pdf()
     print('PDF generated in', time.time() - start, 'seconds')
     pdf.deleteAllPngs()
+    start = time.time()
+    depth = 15
+    allOpeningsTree = OpeningChessTree(db, depth = depth)
+    
+    filename = 'depth3'
+    pdf.generateDotFileFromTree(allOpeningsTree, filename, depth=depth, rootName='root')
+    pdf.createPNGfromDotFile(filename)
+    print('aLLTrees', time.time() - start)
+
+
+
 
 
 

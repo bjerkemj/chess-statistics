@@ -1,5 +1,10 @@
 #Tinus Alsos og Johan Bjerkem
 # TODO
+Test på chessOpeningTree
+Rydde opp i PDFCreater
+Skriv 
+
+
 
 Det er en feil når man laster inn et ChessOpeningTree med en enkelåpning. Når jeg lastet med 'French' kjørte det evig. Fant ut av problemet: Når man lager en ny chessDatabase for å bruke til et nytt tre i ChessTree, så kan det hende det ikke eksisterer flere moves, da vil listen være tom også lastes alt sammen inn på ny
 

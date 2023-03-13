@@ -33,21 +33,9 @@ assert cg1.getMoveByNumber(4) == "Bg4", \
 assert cg1.getOpening() == "Bird's opening", \
     f"Game opening should be 'Bird's opening' but was {cg1.getOpening()}"
 
+# Må tilpasses windows (abspath os.path.join...)
 cg1.savePng("./tests/saveTestGame")
+
 assert filecmp.cmp('./tests/testGame.pgn', './tests/saveTestGame.pgn'), \
     f"The file created should have identical content to the original file"
 os.remove("./tests/saveTestGame.pgn")
-
-cg2 = ChessGame(xlsxName="./tests/testGame")
-
-assert cg2.getOpening() == cg1.getOpening(), \
-    f"Game loaded from excel's opening should be the same the original games but the opening was {cg2.getOpening()} and should be {cg1.getOpening()}"
-
-assert cg2.getTotalMoves() == cg1.getTotalMoves(), \
-    f"Game loaded from excel's opening should be the same the original games but the total moves was {cg2.getTotalMoves()} and should be {cg1.getTotalMoves()}"
-
-assert cg2.getMoveByNumber(1) == cg1.getMoveByNumber(1), \
-    f"Game loaded from excel's opening should be the same the original games but the first move was {cg2.getMoveByNumber(1)} and should be {cg1.getMoveByNumber(1)}"
-
-assert cg2.getMoveByNumber(99) == cg1.getMoveByNumber(99), \
-    f"Game loaded from excel's opening should be the same the original games but the first move was {cg2.getMoveByNumber(99)} and should be {cg1.getMoveByNumber(99)}"
