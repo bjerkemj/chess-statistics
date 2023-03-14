@@ -115,30 +115,20 @@ class ChessGame:
                 gameDataText += moveInfo[1]
                 gameDataText += "} "
 
-            index = 0
-            while index+81 < len(gameDataText):
-                spaceIndex = gameDataText.rfind(" ", index, index+81)
+            index = -1
+            gameDataText += self.metaData["Result"] + "\n"
+            lineLength = 81
+            while index+lineLength < len(gameDataText):
+                if index == -1:
+                    spaceIndex = gameDataText.rfind(" ", 0, index+lineLength)
+                else:
+                    spaceIndex = gameDataText.rfind(" ", index, index+lineLength)
                 gameDataList = list(gameDataText)
                 gameDataList[spaceIndex] = "\n"
                 gameDataText = "".join(gameDataList)
-                index = spaceIndex
-            # gameDataList = list(gameDataText)
-            # gameDataList.append(self.metaData["Result"] + "\n\n")
-            # gameDataText = "".join(gameDataList)
-            # print()
-            # print(gameDataText)
-            # print('----')
-            # print(gameDataText[-1])
-            gameDataText += self.metaData["Result"] + "\n\n"
-            # print(len(self.metaData['Result']))
+                index = spaceIndex 
+            gameDataText += "\n"            
             f.writelines(gameDataText)
-            # print(len(gameDataText))
-            # if f.readlines()[-1]> 75:
-            #     f.write("\n\n\n\n")
-            # f.write(self.metaData["Result"] + "\n\n")
-            # gameDataText += self.metaData["Result"] + "\n\n"
-            
-            # f.write(self.metaData["Result"] + "\n\n")
 
     def saveXlsx(self, saveName: str) -> None:
         os.system('rm ' + saveName + '.xlsx')
