@@ -7,7 +7,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 class ChessGame:
     requiredTags = ["Event", "Site", "Date",
                     "Round", "White", "Black", "Result"]
-    optionalTags = ["ECO", "Opening", "PlyCount", "WhiteElo", "BlackElo"]
+    optionalTags = ["ECO", "Opening", "Variation", "PlyCount", "WhiteElo", "BlackElo"]
 
     def __init__(self, pgn: str = None, xlsxName: str = None) ->  None:
         self.metaData = {}
@@ -100,8 +100,8 @@ class ChessGame:
 
         self.updateGameData()
 
-    def savePgn(self, saveName: str, type: str = "a") -> None:
-        with open(os.path.join(ROOT, saveName + ".pgn"), type) as f:
+    def savePgn(self, saveName: str, type: str = "w") -> None:
+        with open(os.path.join(ROOT, saveName + ".pgn"), type + '+') as f:
             for key, value in self.metaData.items():
                 f.write(f"[{key} \"{value}\"]\n")
             f.write("\n")
@@ -122,9 +122,23 @@ class ChessGame:
                 gameDataList[spaceIndex] = "\n"
                 gameDataText = "".join(gameDataList)
                 index = spaceIndex
-
+            # gameDataList = list(gameDataText)
+            # gameDataList.append(self.metaData["Result"] + "\n\n")
+            # gameDataText = "".join(gameDataList)
+            # print()
+            # print(gameDataText)
+            # print('----')
+            # print(gameDataText[-1])
+            gameDataText += self.metaData["Result"] + "\n\n"
+            # print(len(self.metaData['Result']))
             f.writelines(gameDataText)
-            f.write(self.metaData["Result"] + "\n\n")
+            # print(len(gameDataText))
+            # if f.readlines()[-1]> 75:
+            #     f.write("\n\n\n\n")
+            # f.write(self.metaData["Result"] + "\n\n")
+            # gameDataText += self.metaData["Result"] + "\n\n"
+            
+            # f.write(self.metaData["Result"] + "\n\n")
 
     def saveXlsx(self, saveName: str) -> None:
         os.system('rm ' + saveName + '.xlsx')
