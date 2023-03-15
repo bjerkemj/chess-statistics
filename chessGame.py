@@ -1,3 +1,4 @@
+#Tinus Alsos og Johan Bjerkem
 import os
 import re
 import xlsxwriter
