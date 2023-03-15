@@ -1,3 +1,4 @@
+#Tinus Alsos og Johan Bjerkem
 # 0: Imports
 # ----------
 import os

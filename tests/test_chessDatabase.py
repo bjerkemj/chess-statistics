@@ -1,3 +1,4 @@
+#Tinus Alsos og Johan Bjerkem
 import filecmp
 import os
 import sys

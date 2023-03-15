@@ -1,3 +1,4 @@
+#Tinus Alsos og Johan Bjerkem
 import os
 # RUN FROM FOLDER chess-statistics
 if __name__ == '__main__':
