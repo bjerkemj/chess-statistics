@@ -34,4 +34,4 @@ We deviate a bit from the portable game notation in displaying the moves perform
 
 We have included a visualization of a tree containing all openings to depth 15 in 'Depth15TreeAllOpenings.pdf'. The quality is quite poor due to the size. Larger trees can be created (as is done in the test_chessOpeningTree.py), but the graph is too large to be of usable quality.
 
-We found an interesting result: There are 2599 leaves in the tree containing all the games, as there is two 34-move games that are equivalent.
+We found an interesting result: There are 2599 leaves in the tree containing all the games, as there is two 34-move games that are equivalent (with respect to which color makes what move in what order, but the tags are different).
